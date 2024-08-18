@@ -1,62 +1,39 @@
-[gd_scene load_steps=7 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=8 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
+[ext_resource type="Script" path="res://scenes/hudbg.gd" id="6_mypyl"]
 [ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
 
 [node name="Player" type="Node2D"]
-position = Vector2(-6, 6)
 script = ExtResource("1_mqfbn")
 metadata/_edit_group_ = true
 
-[node name="DiscardButton" type="Button" parent="."]
-offset_left = 132.0
+[node name="PlayerBG" type="ColorRect" parent="."]
+offset_right = 342.0
+offset_bottom = 1021.0
+color = Color(0.129412, 0.14902, 0.180392, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 98.0
 offset_top = 445.0
-offset_right = 233.0
-offset_bottom = 476.0
+offset_right = 255.0
+offset_bottom = 546.0
+
+[node name="DiscardButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 text = "discard tiles"
 
-[node name="PlaceButton" type="Button" parent="."]
-offset_left = 145.0
-offset_top = 487.0
-offset_right = 231.0
-offset_bottom = 518.0
+[node name="PlaceButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 text = "place tiles"
 
-[node name="RefillButton" type="Button" parent="."]
-offset_left = 146.0
-offset_top = 530.0
-offset_right = 204.0
-offset_bottom = 560.0
+[node name="RefillButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 text = "refill tiles"
-
-[node name="TileBag" type="Node2D" parent="."]
-position = Vector2(-336, 622)
-script = ExtResource("2_gcavq")
-metadata/_edit_group_ = true
-
-[node name="BagBG" type="ColorRect" parent="TileBag"]
-offset_left = 458.0
-offset_top = 95.0
-offset_right = 579.0
-offset_bottom = 206.0
-color = Color(0, 0.247059, 0.529412, 1)
-
-[node name="BagTitle" type="Label" parent="TileBag"]
-offset_left = 467.0
-offset_top = 101.0
-offset_right = 507.0
-offset_bottom = 124.0
-text = "Bag"
-
-[node name="BagContentsList" type="Label" parent="TileBag"]
-offset_left = 471.0
-offset_top = 137.0
-offset_right = 562.0
-offset_bottom = 193.0
 
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("3_b3yqm")
@@ -76,8 +53,36 @@ offset_right = 244.0
 offset_bottom = 426.0
 select_mode = 1
 
+[node name="TileBag" type="Node2D" parent="."]
+position = Vector2(-346, 626)
+script = ExtResource("2_gcavq")
+metadata/_edit_group_ = true
+
+[node name="BagBG" type="ColorRect" parent="TileBag"]
+offset_left = 458.0
+offset_top = 95.0
+offset_right = 579.0
+offset_bottom = 223.0
+color = Color(0, 0.247059, 0.529412, 1)
+
+[node name="BagTitle" type="Label" parent="TileBag"]
+offset_left = 467.0
+offset_top = 101.0
+offset_right = 507.0
+offset_bottom = 124.0
+text = "Bag"
+
+[node name="BagContentsList" type="Label" parent="TileBag"]
+offset_left = 471.0
+offset_top = 133.0
+offset_right = 562.0
+offset_bottom = 208.0
+text = "-
+-
+-"
+
 [node name="DiscardZone" type="Node2D" parent="."]
-position = Vector2(-178, 515)
+position = Vector2(-185, 510)
 script = ExtResource("4_c5561")
 metadata/_edit_group_ = true
 
@@ -85,7 +90,7 @@ metadata/_edit_group_ = true
 offset_left = 298.0
 offset_top = 73.0
 offset_right = 419.0
-offset_bottom = 184.0
+offset_bottom = 197.0
 color = Color(0.486275, 0.117647, 0.247059, 1)
 
 [node name="TitleDiscard" type="Label" parent="DiscardZone"]
@@ -96,54 +101,71 @@ offset_bottom = 104.0
 text = "Discard"
 
 [node name="DiscardContentsList" type="Label" parent="DiscardZone"]
-offset_left = 310.0
-offset_top = 117.0
-offset_right = 409.0
-offset_bottom = 168.0
+offset_left = 308.0
+offset_top = 112.0
+offset_right = 407.0
+offset_bottom = 187.0
+text = "-
+-
+-"
 
 [node name="HUD" type="Node2D" parent="."]
+position = Vector2(112, 873)
 script = ExtResource("5_oyh3m")
 metadata/_edit_group_ = true
 
-[node name="HUDBG" type="ColorRect" parent="HUD"]
-offset_left = 116.0
-offset_top = 857.0
-offset_right = 237.0
-offset_bottom = 986.0
-color = Color(0, 0.286275, 0.309804, 1)
+[node name="CenterContainer" type="CenterContainer" parent="HUD"]
+offset_right = 154.0
+offset_bottom = 112.0
+metadata/_edit_group_ = true
 
-[node name="HUDTitle" type="Label" parent="HUD"]
-offset_left = 125.0
-offset_top = 867.0
-offset_right = 168.0
-offset_bottom = 890.0
+[node name="HUDBG" type="ColorRect" parent="HUD/CenterContainer"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+color = Color(0, 0.286275, 0.309804, 1)
+script = ExtResource("6_mypyl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 108.0
+offset_bottom = 107.0
+
+[node name="HUDTitle" type="Label" parent="HUD/VBoxContainer"]
+layout_mode = 2
 text = "Score"
 
-[node name="HUDContents" type="Label" parent="HUD"]
-offset_left = 126.0
-offset_top = 898.0
-offset_right = 228.0
-offset_bottom = 959.0
+[node name="HUDContents" type="Label" parent="HUD/VBoxContainer"]
+layout_mode = 2
 text = "Money: -
 Population: -
 Food: -"
 
 [node name="Messages" type="Node2D" parent="."]
+position = Vector2(25, 17)
 script = ExtResource("6_oreyv")
 metadata/_edit_group_ = true
-
-[node name="MessagesLabel" type="Label" parent="Messages"]
-offset_left = 109.0
-offset_top = 13.0
-offset_right = 250.0
-offset_bottom = 69.0
-autowrap_mode = 2
 
 [node name="FadeTimer" type="Timer" parent="Messages"]
 wait_time = 2.0
 
-[connection signal="pressed" from="DiscardButton" to="." method="_on_discard_button_pressed"]
-[connection signal="pressed" from="PlaceButton" to="." method="_on_place_button_pressed"]
-[connection signal="pressed" from="RefillButton" to="." method="_on_refill_button_pressed"]
+[node name="CenterContainer" type="CenterContainer" parent="Messages"]
+offset_left = -5.0
+offset_right = 295.0
+offset_bottom = 60.0
+
+[node name="MessagesBG" type="ColorRect" parent="Messages/CenterContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+color = Color(0.211765, 0.239216, 0.290196, 1)
+
+[node name="MessagesLabel" type="Label" parent="Messages/CenterContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+autowrap_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/DiscardButton" to="." method="_on_discard_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlaceButton" to="." method="_on_place_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RefillButton" to="." method="_on_refill_button_pressed"]
 [connection signal="notify_warning" from="Messages" to="Messages" method="_on_notify_warning"]
 [connection signal="timeout" from="Messages/FadeTimer" to="Messages" method="_on_fade_timer_timeout"]

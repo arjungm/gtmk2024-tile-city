@@ -13,15 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.211765, 0.239216, 0.290196, 1)
 
-[node name="hud_bag_hand_bg" type="ColorRect" parent="."]
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 332.0
-grow_vertical = 2
-color = Color(0.129412, 0.14902, 0.180392, 1)
-
 [node name="Player" parent="." instance=ExtResource("1_cmtdo")]
-position = Vector2(-21, 42)
 
 [node name="Grid" parent="." instance=ExtResource("2_o0rg1")]
 position = Vector2(417, 76)

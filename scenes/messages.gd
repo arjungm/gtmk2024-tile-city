@@ -9,17 +9,18 @@ enum MessageTypes {
 func get_message_string(msg_type: MessageTypes):
 	match msg_type:
 		MessageTypes.INVALID_PLACEMENT_POP_FOOD:
-			return "Cannot place housing. Not enough food!"
+			return "Cannot place housing.\nNot enough food!"
 
 func show_message(msg: String):
-	$MessagesLabel.text = msg
+	$CenterContainer/MessagesLabel.text = msg
 	
 func clear_message():
-	$MessagesLabel.text = ""
+	$CenterContainer/MessagesLabel.text = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	$CenterContainer/MessagesBG.set_custom_minimum_size($CenterContainer.size)
+	$CenterContainer/MessagesLabel.set_custom_minimum_size($CenterContainer.size)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
