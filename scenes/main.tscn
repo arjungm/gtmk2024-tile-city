@@ -14,19 +14,18 @@ grow_vertical = 2
 color = Color(0.211765, 0.239216, 0.290196, 1)
 
 [node name="hud_bag_hand_bg" type="ColorRect" parent="."]
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
+anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = -293.0
-grow_horizontal = 0
+offset_right = 332.0
 grow_vertical = 2
 color = Color(0.129412, 0.14902, 0.180392, 1)
 
-[node name="Grid" parent="." instance=ExtResource("2_o0rg1")]
-
 [node name="Player" parent="." instance=ExtResource("1_cmtdo")]
-position = Vector2(-79, 585)
+position = Vector2(-22, -39)
 
-[connection signal="tile_placed" from="Grid" to="Player" method="_on_grid_tile_placed"]
+[node name="Grid" parent="." instance=ExtResource("2_o0rg1")]
+position = Vector2(417, 76)
+metadata/_edit_group_ = true
+
 [connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]
+[connection signal="tile_placed" from="Grid" to="Player" method="_on_grid_tile_placed"]
