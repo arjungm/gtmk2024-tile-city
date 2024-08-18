@@ -39,8 +39,9 @@ func _on_discard_button_pressed() -> void:
 func _on_place_button_pressed() -> void:
 	var selected = $PlayerHand/HandListTiles.get_selected_items()
 	# Try to place first tile TODO: support a list here
-	var tile = $PlayerHand/HandListTiles.get_item_text(selected[0])
-	start_place_mode.emit(Tile.string_to_type(tile))
+	if selected.size() > 0:
+		var tile = $PlayerHand/HandListTiles.get_item_text(selected[0])
+		start_place_mode.emit(Tile.string_to_type(tile))
 
 
 func _on_grid_tile_placed(tile: Tile.Type) -> void:

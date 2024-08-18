@@ -5,6 +5,7 @@ signal tile_placed(tile: Tile.Type)
 @export var grid_size = 5
 var bounds = Rect2i(0, 0, grid_size, grid_size)
 const BLANK_TILE_IDX = Vector2i(15, 11)
+const ERROR_TILE_IDX = Vector2i(14, 11)
 var placing_tile: Tile.Type = Tile.Type.UNKNOWN
 
 # Called when the node enters the scene tree for the first time.
@@ -19,8 +20,12 @@ func _process(delta: float) -> void:
 	$PreviewLayer.clear()
 	if placing_tile != Tile.Type.UNKNOWN:
 		var preview_cell = $PreviewLayer.local_to_map(get_local_mouse_position())
+		var cell = local_to_map(get_local_mouse_position())
 		if bounds.has_point(preview_cell):
-			$PreviewLayer.set_cell(preview_cell, 1, tile_to_index(placing_tile))
+			if (get_cell_atlas_coords(cell) == BLANK_TILE_IDX):
+				$PreviewLayer.set_cell(preview_cell, 1, tile_to_index(placing_tile))
+			else:
+				$PreviewLayer.set_cell(preview_cell, 1, ERROR_TILE_IDX)
 	pass
 
 func _input(event):
