@@ -9,8 +9,8 @@ var placing_tile: Tile.Type = Tile.Type.UNKNOWN
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	for i in grid_size:
-		for j in grid_size:
+	for i in range(bounds.position.x, bounds.end.x):
+		for j in range(bounds.position.y, bounds.end.y):
 			set_cell(Vector2i(i, j), 1, BLANK_TILE_IDX)
 	pass
 
