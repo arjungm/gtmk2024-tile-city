@@ -17,6 +17,7 @@ color = Color(0.211765, 0.239216, 0.290196, 1)
 
 [node name="Grid" parent="." instance=ExtResource("2_o0rg1")]
 position = Vector2(417, 76)
+grid_size = 5
 metadata/_edit_group_ = true
 
 [connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]
