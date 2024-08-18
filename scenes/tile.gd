@@ -3,7 +3,6 @@ enum Type {
 	HOUSE,
 	ROAD,
 	FARM,
-	DISTRICT,
 	UNKNOWN = -1,
 }
 
