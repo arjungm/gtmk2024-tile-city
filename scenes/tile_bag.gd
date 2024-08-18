@@ -15,12 +15,12 @@ func draw_tile() -> String:
 	for t in contained_tiles:
 		if contained_tiles[t] > 0:
 			contained_tiles[t] -= 1
-			return t
+			return Tile.type_to_string(t)
 	return NO_TILE_KEY
 	
 func print_state():
 	for t in contained_tiles:
-		print(t, ": ", contained_tiles[t])
+		print(Tile.type_to_string(t), ": ", contained_tiles[t])
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -32,5 +32,5 @@ func _process(delta: float) -> void:
 	var contents_status: String = ""
 	for t in contained_tiles:
 		var c: int = contained_tiles[t]
-		contents_status += t + ": " + str(c) + "\n"
+		contents_status += Tile.type_to_string(t) + ": " + str(c) + "\n"
 	$BagContentsList.text = contents_status

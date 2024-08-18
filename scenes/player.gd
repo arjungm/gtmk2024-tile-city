@@ -1,10 +1,10 @@
 extends Node2D
 
-signal start_place_mode(tile: String)
+signal start_place_mode(tile: Tile.Type)
 
 var starting_tiles = {
-	"house": 15,
-	"road": 5
+	Tile.Type.HOUSE: 15,
+	Tile.Type.ROAD: 5
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -40,4 +40,4 @@ func _on_place_button_pressed() -> void:
 	var selected = $PlayerHand/HandListTiles.get_selected_items()
 	# Try to place first tile
 	var tile = $PlayerHand/HandListTiles.get_item_text(selected[0])
-	start_place_mode.emit(tile)
+	start_place_mode.emit(Tile.string_to_type(tile))

@@ -10,6 +10,6 @@ collision_enabled = false
 script = ExtResource("2_ard0o")
 
 [node name="PreviewLayer" type="TileMapLayer" parent="."]
-modulate = Color(1, 1, 1, 0.247059)
+modulate = Color(1, 1, 1, 0.25098)
 tile_set = ExtResource("1_x6cbu")
 collision_enabled = false
