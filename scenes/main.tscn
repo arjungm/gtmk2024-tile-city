@@ -28,4 +28,5 @@ color = Color(0.129412, 0.14902, 0.180392, 1)
 [node name="Player" parent="." instance=ExtResource("1_cmtdo")]
 position = Vector2(-79, 585)
 
+[connection signal="tile_placed" from="Grid" to="Player" method="_on_grid_tile_placed"]
 [connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]
