@@ -8,6 +8,11 @@ tile_set = ExtResource("1_x6cbu")
 collision_enabled = false
 script = ExtResource("2_ard0o")
 
+[node name="DistrictLayer" type="TileMapLayer" parent="."]
+modulate = Color(1, 1, 1, 0.784314)
+tile_set = ExtResource("1_x6cbu")
+collision_enabled = false
+
 [node name="PreviewLayer" type="TileMapLayer" parent="."]
 modulate = Color(1, 1, 1, 0.498039)
 tile_set = ExtResource("1_x6cbu")

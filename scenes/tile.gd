@@ -3,7 +3,8 @@ enum Type {
 	HOUSE,
 	ROAD,
 	FARM,
-	UNKNOWN = -1
+	DISTRICT,
+	UNKNOWN = -1,
 }
 
 static func type_to_string(type: Type) -> String:

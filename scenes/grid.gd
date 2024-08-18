@@ -1,6 +1,7 @@
 extends TileMapLayer
 
 const TileHandItem = preload("res://data_types/tile_hand_item.gd")
+const District = preload("res://data_types/district.gd")
 
 signal tile_placed(tile_idx: int, tile_type: Tile.Type)
 
@@ -10,13 +11,16 @@ const BLANK_TILE_IDX = Vector2i(15, 11)
 const ERROR_TILE_IDX = Vector2i(14, 11)
 
 var placement_tile: TileHandItem = null
+var placement_district: District = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	for i in range(bounds.position.x, bounds.end.x):
 		for j in range(bounds.position.y, bounds.end.y):
 			set_cell(Vector2i(i, j), 1, BLANK_TILE_IDX)
-	pass
+	
+	# For testing
+	placement_district = District.new([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -29,6 +33,12 @@ func _process(delta: float) -> void:
 				$PreviewLayer.set_cell(preview_cell, 1, tile_type_to_atlas_index(placement_tile.tile_type))
 			else:
 				$PreviewLayer.set_cell(preview_cell, 1, ERROR_TILE_IDX)
+	elif placement_district != null:
+		var origin_cell = $PreviewLayer.local_to_map(get_local_mouse_position())
+		var cells = placement_district.get_rotated_offsets().map(func(offset): return origin_cell + offset)
+		for cell in cells:
+			if bounds.has_point(cell):
+				$PreviewLayer.set_cell(cell, 1, tile_type_to_atlas_index(Tile.Type.DISTRICT))
 	pass
 
 func _input(event):
@@ -42,6 +52,20 @@ func _input(event):
 			tile_placed.emit(placement_tile.tile_idx, placement_tile.tile_type)
 			print("place ", placement_tile.tile_type)
 			placement_tile = null
+		if placement_district && event.button_index == MOUSE_BUTTON_LEFT:
+			var placeable = placement_district.get_rotated_offsets().all(func(off): 
+				var idx = cell + off
+				return bounds.has_point(idx) \
+					&& $DistrictLayer.get_cell_atlas_coords(idx) == Vector2i(-1, -1)
+			)
+			if placeable:
+				for off in placement_district.get_rotated_offsets():
+					$DistrictLayer.set_cell(cell + off, 1, tile_type_to_atlas_index(Tile.Type.DISTRICT))
+				placement_district = null
+	
+	if placement_district != null && event is InputEventKey && event.is_pressed():
+		if event.keycode == 82: # "r" key TODO: change to correct input
+			placement_district.rotate()
 
 
 func _on_start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type) -> void:
@@ -50,6 +74,8 @@ func _on_start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type
 
 func tile_type_to_atlas_index(tile: Tile.Type) -> Vector2i:
 	match tile:
+		Tile.Type.DISTRICT:
+			return Vector2i(12, 2)
 		Tile.Type.HOUSE:
 			return Vector2i(0, 4)
 		Tile.Type.ROAD:
