@@ -1,8 +1,8 @@
 class_name Tile
 enum Type {
-	HOUSE,
-	ROAD,
-	FARM,
+	HOUSE = 0,
+	ROAD = 1,
+	FARM = 2,
 	UNKNOWN = -1,
 }
 

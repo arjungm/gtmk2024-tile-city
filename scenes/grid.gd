@@ -7,12 +7,20 @@ signal tile_placed(tile_idx: int, tile_type: Tile.Type)
 
 @export var grid_size = 5
 var bounds = Rect2i(0, 0, grid_size, grid_size)
-const BLANK_TILE_IDX = Vector2i(15, 11)
+const BLANK_TILE_IDX = Vector2i(-1, -1)
 const ERROR_TILE_IDX = Vector2i(14, 11)
 const ERROR_DIST_IDX = Vector2i(15, 2)
 
+const TILE_TYPE_LAYER_NAME = "tile_type"
+
+const ATLAS_TEXTURE_LAYER_ID = 1
+
 var placement_tile: TileHandItem = null
 var placement_district: District = null
+
+func get_game_map():
+	for coords in $Map.get_used_cells():
+		print(coords, " ", get_tile_type_in_cell(coords))
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -48,8 +56,7 @@ func _input(event):
 			pass
 		var curr_tile_index = $Map.get_cell_atlas_coords(cell)
 		if placement_tile && curr_tile_index == BLANK_TILE_IDX && event.button_index == MOUSE_BUTTON_LEFT:
-			$Map.set_cell(cell, 1, tile_type_to_atlas_index(placement_tile.tile_type))
-			tile_placed.emit(placement_tile.tile_idx, placement_tile.tile_type)
+			handle_tile_map_update(cell, placement_tile)
 			placement_tile = null
 		if placement_district && event.button_index == MOUSE_BUTTON_LEFT:
 			if placeable_in_bounds(placement_district, cell, bounds):
@@ -61,6 +68,24 @@ func _input(event):
 		if event.keycode == 82: # "r" key TODO: change to correct input
 			placement_district.rotate()
 
+func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem):
+	var tile_type = tile_hand_item.tile_type
+	var tile_idx = tile_hand_item.tile_idx
+	set_tile_texture_in_cell(target_cell, tile_type)
+	set_tile_type_in_cell(target_cell, tile_type)
+	tile_placed.emit(tile_idx, tile_type)
+
+func get_tile_type_in_cell(target_cell: Vector2i) -> Tile.Type:
+	var cell_tile_data = $Map.get_cell_tile_data(target_cell)
+	return cell_tile_data.get_custom_data(TILE_TYPE_LAYER_NAME)
+
+func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
+	var tile_texture = tile_type_to_atlas_index(tile_type)
+	$Map.set_cell(target_cell, ATLAS_TEXTURE_LAYER_ID, tile_texture)
+
+func set_tile_type_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
+	var cell_tile_data = $Map.get_cell_tile_data(target_cell)
+	cell_tile_data.set_custom_data(TILE_TYPE_LAYER_NAME, tile_type)
 
 func _on_button_pressed() -> void:
 	var shape: Array[Vector2i]

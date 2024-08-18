@@ -12,6 +12,8 @@ var starting_tiles = {
 @export var population: int = 0
 @export var food: int = 0
 
+@export var get_game_map_fn = null
+
 func get_money():
 	return money
 
@@ -35,11 +37,13 @@ func _process(delta: float) -> void:
 func _on_refill_button_pressed() -> void:
 	var num_remaining_tiles = $PlayerHand.get_maximum_hand_size() - $PlayerHand.get_tile_count()
 	for i in range(num_remaining_tiles):
-		var drawn_tile = $TileBag.draw_tile()
-		if drawn_tile == Tile.Type.UNKNOWN:
-			continue
-		$PlayerHand.gain_tile(drawn_tile)
+		draw_gain_tile()
 
+func draw_gain_tile():
+	var drawn_tile = $TileBag.draw_tile()
+	if drawn_tile == Tile.Type.UNKNOWN:
+		pass
+	$PlayerHand.gain_tile(drawn_tile)
 
 func _on_discard_button_pressed() -> void:
 	var selected = $PlayerHand/HandListTiles.get_selected_items()
@@ -80,7 +84,13 @@ func handle_tile_placement(tile_type: Tile.Type):
 		Tile.Type.HOUSE:
 			population += 1
 		Tile.Type.ROAD:
-			pass
+			draw_gain_tile()
 		_:
 			pass
 	
+
+func _on_end_round_button_pressed() -> void:
+	update_tile_simulation() # Replace with function body.
+
+func update_tile_simulation():
+	get_game_map_fn.call()
