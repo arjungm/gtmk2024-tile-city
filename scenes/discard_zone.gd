@@ -2,7 +2,7 @@ extends Node2D
 
 var discarded_tiles = {}
 
-func put_tile(tile):
+func put_tile(tile: Tile.Type):
 	if not discarded_tiles.has(tile):
 		discarded_tiles[tile] = 0
 	discarded_tiles[tile] += 1

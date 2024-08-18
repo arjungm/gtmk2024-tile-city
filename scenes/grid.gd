@@ -51,7 +51,9 @@ func _on_start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type
 func tile_type_to_atlas_index(tile: Tile.Type) -> Vector2i:
 	match tile:
 		Tile.Type.HOUSE:
-			return Vector2i(0, 3)
+			return Vector2i(0, 4)
 		Tile.Type.ROAD:
-			return Vector2i(3, 6)
+			return Vector2i(0, 6)
+		Tile.Type.FARM:
+			return Vector2i(0, 10)
 	return BLANK_TILE_IDX

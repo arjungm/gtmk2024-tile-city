@@ -1,6 +1,9 @@
 class_name Tile
 enum Type {
-	HOUSE, ROAD, UNKNOWN = -1
+	HOUSE,
+	ROAD,
+	FARM,
+	UNKNOWN = -1
 }
 
 static func type_to_string(type: Type) -> String:
@@ -9,6 +12,8 @@ static func type_to_string(type: Type) -> String:
 			return "house"
 		Type.ROAD:
 			return "road"
+		Type.FARM:
+			return "farm"
 		_:
 			return "unknown"
 
@@ -18,5 +23,7 @@ static func string_to_type(string: String) -> Type:
 			return Type.HOUSE
 		"road":
 			return Type.ROAD
+		"farm":
+			return Type.FARM
 		_:
 			return Type.UNKNOWN

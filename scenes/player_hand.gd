@@ -20,6 +20,12 @@ func remove_tile(tile_idx: int, tile_type: Tile.Type):
 
 func get_tile_at(tile_idx: int) -> Tile.Type:
 	return tiles_in_hand[tile_idx]
+	
+func get_selected_items():
+	return $HandListTiles.get_selected_items()
+	
+func reset_selection():
+	$HandListTiles.deselect_all()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

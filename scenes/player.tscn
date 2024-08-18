@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=7 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
+[ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
+[ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
 
 [node name="Player" type="Node2D"]
 position = Vector2(-6, 6)
@@ -51,10 +53,10 @@ offset_bottom = 124.0
 text = "Bag"
 
 [node name="BagContentsList" type="Label" parent="TileBag"]
-offset_left = 498.0
-offset_top = 141.0
-offset_right = 538.0
-offset_bottom = 164.0
+offset_left = 471.0
+offset_top = 137.0
+offset_right = 562.0
+offset_bottom = 193.0
 
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("3_b3yqm")
@@ -94,11 +96,54 @@ offset_bottom = 104.0
 text = "Discard"
 
 [node name="DiscardContentsList" type="Label" parent="DiscardZone"]
-offset_left = 340.0
-offset_top = 123.0
-offset_right = 380.0
-offset_bottom = 146.0
+offset_left = 310.0
+offset_top = 117.0
+offset_right = 409.0
+offset_bottom = 168.0
+
+[node name="HUD" type="Node2D" parent="."]
+script = ExtResource("5_oyh3m")
+metadata/_edit_group_ = true
+
+[node name="HUDBG" type="ColorRect" parent="HUD"]
+offset_left = 116.0
+offset_top = 857.0
+offset_right = 237.0
+offset_bottom = 986.0
+color = Color(0, 0.286275, 0.309804, 1)
+
+[node name="HUDTitle" type="Label" parent="HUD"]
+offset_left = 125.0
+offset_top = 867.0
+offset_right = 168.0
+offset_bottom = 890.0
+text = "Score"
+
+[node name="HUDContents" type="Label" parent="HUD"]
+offset_left = 126.0
+offset_top = 898.0
+offset_right = 228.0
+offset_bottom = 959.0
+text = "Money: -
+Population: -
+Food: -"
+
+[node name="Messages" type="Node2D" parent="."]
+script = ExtResource("6_oreyv")
+metadata/_edit_group_ = true
+
+[node name="MessagesLabel" type="Label" parent="Messages"]
+offset_left = 109.0
+offset_top = 13.0
+offset_right = 250.0
+offset_bottom = 69.0
+autowrap_mode = 2
+
+[node name="FadeTimer" type="Timer" parent="Messages"]
+wait_time = 2.0
 
 [connection signal="pressed" from="DiscardButton" to="." method="_on_discard_button_pressed"]
 [connection signal="pressed" from="PlaceButton" to="." method="_on_place_button_pressed"]
 [connection signal="pressed" from="RefillButton" to="." method="_on_refill_button_pressed"]
+[connection signal="notify_warning" from="Messages" to="Messages" method="_on_notify_warning"]
+[connection signal="timeout" from="Messages/FadeTimer" to="Messages" method="_on_fade_timer_timeout"]
