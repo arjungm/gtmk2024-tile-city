@@ -13,7 +13,7 @@ func update_list_display():
 	var contents_status: String = ""
 	for t in discarded_tiles:
 		var c: int = discarded_tiles[t]
-		contents_status += t + ": " + str(c) + "\n"
+		contents_status += Tile.type_to_string(t) + ": " + str(c) + "\n"
 	$DiscardContentsList.text = contents_status
 
 # Called when the node enters the scene tree for the first time.

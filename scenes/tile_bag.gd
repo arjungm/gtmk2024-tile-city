@@ -2,25 +2,21 @@ extends Node2D
 
 var contained_tiles = {}
 
-var NO_TILE_KEY = "NO_TILE"
-
 func refill_with(incoming_tiles: Dictionary) -> void:
 	for tile in incoming_tiles:
 		var count = incoming_tiles[tile]
 		if not contained_tiles.has(tile):
 			contained_tiles[tile] = 0
 		contained_tiles[tile] += count
-		
-func draw_tile() -> String:
+
+
+func draw_tile() -> Tile.Type:
 	for t in contained_tiles:
 		if contained_tiles[t] > 0:
 			contained_tiles[t] -= 1
-			return Tile.type_to_string(t)
-	return NO_TILE_KEY
-	
-func print_state():
-	for t in contained_tiles:
-		print(Tile.type_to_string(t), ": ", contained_tiles[t])
+			return t
+	return Tile.Type.UNKNOWN
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
