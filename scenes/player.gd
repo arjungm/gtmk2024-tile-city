@@ -1,4 +1,6 @@
-extends Node
+extends Node2D
+
+signal start_place_mode(tile: String)
 
 var starting_tiles = {
 	"house": 15,
@@ -32,4 +34,10 @@ func _on_discard_button_pressed() -> void:
 		var tile = $PlayerHand/HandListTiles.get_item_text(s)
 		$DiscardZone.put_tile(tile)
 		$PlayerHand/HandListTiles.remove_item(s)
-	
+
+
+func _on_place_button_pressed() -> void:
+	var selected = $PlayerHand/HandListTiles.get_selected_items()
+	# Try to place first tile
+	var tile = $PlayerHand/HandListTiles.get_item_text(selected[0])
+	start_place_mode.emit(tile)

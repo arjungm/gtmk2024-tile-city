@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://b0fqv4flxexal"]
+[gd_scene load_steps=3 format=3 uid="uid://b0fqv4flxexal"]
+
+[ext_resource type="PackedScene" uid="uid://2elikixd2mpj" path="res://scenes/player.tscn" id="1_cmtdo"]
+[ext_resource type="PackedScene" uid="uid://dl7yjxvv30uv5" path="res://scenes/grid.tscn" id="2_o0rg1"]
 
 [node name="Main" type="Node"]
 
@@ -19,3 +22,10 @@ offset_left = -293.0
 grow_horizontal = 0
 grow_vertical = 2
 color = Color(0.129412, 0.14902, 0.180392, 1)
+
+[node name="Grid" parent="." instance=ExtResource("2_o0rg1")]
+
+[node name="Player" parent="." instance=ExtResource("1_cmtdo")]
+position = Vector2(-79, 585)
+
+[connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]

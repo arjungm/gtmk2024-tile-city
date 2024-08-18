@@ -5,8 +5,10 @@
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
 
-[node name="Player" type="Node"]
+[node name="Player" type="Node2D"]
+position = Vector2(-6, 6)
 script = ExtResource("1_mqfbn")
+metadata/_edit_group_ = true
 
 [node name="DiscardButton" type="Button" parent="."]
 offset_left = 132.0
@@ -29,8 +31,9 @@ offset_right = 204.0
 offset_bottom = 560.0
 text = "refill tiles"
 
-[node name="TileBag" type="Node" parent="."]
+[node name="TileBag" type="Node2D" parent="."]
 script = ExtResource("2_gcavq")
+metadata/_edit_group_ = true
 
 [node name="BagTitle" type="Label" parent="TileBag"]
 offset_left = 500.0
@@ -45,8 +48,9 @@ offset_top = 124.0
 offset_right = 534.0
 offset_bottom = 147.0
 
-[node name="PlayerHand" type="Node" parent="."]
+[node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("3_b3yqm")
+metadata/_edit_group_ = true
 
 [node name="TitleHand" type="Label" parent="PlayerHand"]
 offset_left = 153.0
@@ -62,8 +66,9 @@ offset_right = 244.0
 offset_bottom = 426.0
 select_mode = 1
 
-[node name="DiscardZone" type="Node" parent="."]
+[node name="DiscardZone" type="Node2D" parent="."]
 script = ExtResource("4_c5561")
+metadata/_edit_group_ = true
 
 [node name="TitleDiscard" type="Label" parent="DiscardZone"]
 offset_left = 327.0
@@ -79,5 +84,5 @@ offset_right = 379.0
 offset_bottom = 144.0
 
 [connection signal="pressed" from="DiscardButton" to="." method="_on_discard_button_pressed"]
+[connection signal="pressed" from="PlaceButton" to="." method="_on_place_button_pressed"]
 [connection signal="pressed" from="RefillButton" to="." method="_on_refill_button_pressed"]
-[connection signal="item_selected" from="PlayerHand/HandListTiles" to="PlayerHand" method="_on_hand_list_tiles_item_selected"]
