@@ -11,6 +11,8 @@ var registered_farm_squares: Array[Dictionary] = []
 # FarmSquareLayer callback to render
 var farm_square_layer_render_fn = null
 
+const FARM_SQUARE_SIZE_SCORE_ARRAY: Array[int] = [2, 4, 8, 12]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -64,6 +66,7 @@ func get_preview_farm_square_bounds():
 	out.min_y = preview_farm_square_min_y
 	out.max_x = preview_farm_square_min_x + preview_farm_square_depth
 	out.max_y = preview_farm_square_min_y + preview_farm_square_depth
+	out.depth = preview_farm_square_depth
 	return out
 	
 func reset_farm_square_picking_mode():
@@ -78,3 +81,10 @@ func _on_farm_square_button_toggled(toggled_on: bool) -> void:
 
 func get_farm_square_picking_active():
 	return farm_square_picking_active
+	
+func get_bonus_food_production() -> int:
+	var bonus_food: int = 0
+	for fs in registered_farm_squares:
+		var score_idx = fs.depth - 1
+		bonus_food += FARM_SQUARE_SIZE_SCORE_ARRAY[score_idx]
+	return bonus_food

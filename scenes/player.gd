@@ -12,7 +12,11 @@ var starting_tiles = {
 @export var population: int = 0
 @export var food: int = 0
 
+var bonus_food: int = 0
+
 @export var get_game_map_fn = null
+
+var fn_get_bonus_food = null
 
 func get_money():
 	return money
@@ -21,7 +25,7 @@ func get_population():
 	return population
 	
 func get_food():
-	return food
+	return food + fn_get_bonus_food.call()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -78,14 +78,14 @@ func process_farm_square_mode():
 		var max_y = mouse_cell.y + depth
 		var min_x = mouse_cell.x
 		var min_y = mouse_cell.y
-		# store the result in the FarmSquareBox
+		# store the preview in the FarmSquareBox (for later registering)
 		if depth > 0:
 			$GridControlsBox/FarmSquareBox.register_preview_farm_square(min_x, min_y, depth)
 			# render the preview of the farm square
 			for x in range(min_x, max_x+1):
 				for y in range(min_y, max_y+1):
 					$Grids/PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
-				
+
 func compute_largest_square(start_cell: Vector2i) -> int:
 	# Dumbest implementation: starting from a given cell, it checks the neighbors at 1-distance.
 	# Then if all three are valid farm squares, then we know 2x2 exists. Repeat this for distance
@@ -145,7 +145,7 @@ func try_confirm_farm_square_marked():
 	if not get_farm_square_picking_active_fn.call():
 		return
 	var bounding_box = $GridControlsBox/FarmSquareBox.get_preview_farm_square_bounds()
-	if bounding_box.min_x == -1:
+	if bounding_box.depth < 1:
 		return
 	$GridControlsBox/FarmSquareBox.register_new_farm_square(bounding_box)
 	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
