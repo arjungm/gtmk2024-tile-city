@@ -11,8 +11,6 @@ const BLANK_TILE_IDX = Vector2i(-1, -1)
 const ERROR_TILE_IDX = Vector2i(14, 11)
 const ERROR_DIST_IDX = Vector2i(15, 2)
 
-const TILE_TYPE_LAYER_NAME = "tile_type"
-
 const ATLAS_TEXTURE_LAYER_ID = 1
 
 var placement_tile: TileHandItem = null
@@ -26,7 +24,7 @@ const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
 
 func get_game_map():
 	for coords in $Grids/Map.get_used_cells():
-		print(coords, " ", get_tile_type_in_cell(coords))
+		print(coords, " ", $Grids/Map.get_tile_type_in_cell(coords))
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -110,7 +108,7 @@ func compute_largest_square(start_cell: Vector2i) -> int:
 	return ret_depth
 
 func is_farm_cell(cell: Vector2i)-> bool:
-	if bounds.has_point(cell) and get_tile_type_in_cell(cell)==Tile.Type.FARM:
+	if bounds.has_point(cell) and $Grids/Map.get_tile_type_in_cell(cell)==Tile.Type.FARM:
 		return true
 	return false
 
@@ -158,22 +156,12 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 	var tile_type = tile_hand_item.tile_type
 	var tile_idx = tile_hand_item.tile_idx
 	set_tile_texture_in_cell(target_cell, tile_type)
-	set_tile_type_in_cell(target_cell, tile_type)
+	$Grids/Map.set_tile_type_in_cell(target_cell, tile_type)
 	tile_placed.emit(tile_idx, tile_type)
-
-func get_tile_type_in_cell(target_cell: Vector2i) -> Tile.Type:
-	var cell_tile_data = $Grids/Map.get_cell_tile_data(target_cell)
-	if cell_tile_data:
-		return cell_tile_data.get_custom_data(TILE_TYPE_LAYER_NAME)
-	return Tile.Type.UNKNOWN
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)
 	$Grids/Map.set_cell(target_cell, ATLAS_TEXTURE_LAYER_ID, tile_texture)
-
-func set_tile_type_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
-	var cell_tile_data = $Grids/Map.get_cell_tile_data(target_cell)
-	cell_tile_data.set_custom_data(TILE_TYPE_LAYER_NAME, tile_type)
 
 func _on_button_pressed() -> void:
 	var shape: Array[Vector2i]

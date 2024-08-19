@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dl7yjxvv30uv5"]
+[gd_scene load_steps=7 format=3 uid="uid://dl7yjxvv30uv5"]
 
 [ext_resource type="TileSet" uid="uid://bqp0j1v0raj46" path="res://scenes/grid.tres" id="1_x6cbu"]
 [ext_resource type="Script" path="res://scenes/bg.gd" id="2_8x6e1"]
 [ext_resource type="Script" path="res://scenes/grid.gd" id="2_ard0o"]
 [ext_resource type="Script" path="res://scenes/house_line_box.gd" id="3_m6dip"]
 [ext_resource type="Script" path="res://scenes/farm_square_box.gd" id="4_rc6g4"]
+[ext_resource type="Script" path="res://scenes/map.gd" id="6_vltxw"]
 
 [node name="Grid" type="Node2D"]
 script = ExtResource("2_ard0o")
@@ -61,6 +62,7 @@ script = ExtResource("2_8x6e1")
 
 [node name="Map" type="TileMapLayer" parent="Grids"]
 tile_set = ExtResource("1_x6cbu")
+script = ExtResource("6_vltxw")
 
 [node name="FarmSquare" type="TileMapLayer" parent="Grids"]
 modulate = Color(1, 1, 1, 0.490196)
