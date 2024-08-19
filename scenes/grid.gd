@@ -19,7 +19,7 @@ var placement_tile: TileHandItem = null
 var placement_district: District = null
 
 func get_game_map():
-	for coords in $Map.get_used_cells():
+	for coords in $Grids/Map.get_used_cells():
 		print(coords, " ", get_tile_type_in_cell(coords))
 
 # Called when the node enters the scene tree for the first time.
@@ -28,38 +28,37 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	$PreviewLayer.clear()
+	$Grids/PreviewLayer.clear()
 	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
-		var preview_cell = $PreviewLayer.local_to_map(get_local_mouse_position())
-		var cell = $Map.local_to_map(get_local_mouse_position())
+		var preview_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
+		var cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
 		if bounds.has_point(preview_cell):
-			if ($Map.get_cell_atlas_coords(cell) == BLANK_TILE_IDX):
-				$PreviewLayer.set_cell(preview_cell, 1, tile_type_to_atlas_index(placement_tile.tile_type))
+			if ($Grids/Map.get_cell_atlas_coords(cell) == BLANK_TILE_IDX):
+				$Grids/PreviewLayer.set_cell(preview_cell, 1, tile_type_to_atlas_index(placement_tile.tile_type))
 			else:
-				$PreviewLayer.set_cell(preview_cell, 1, ERROR_TILE_IDX)
+				$Grids/PreviewLayer.set_cell(preview_cell, 1, ERROR_TILE_IDX)
 	elif placement_district != null:
-		var origin_cell = $PreviewLayer.local_to_map(get_local_mouse_position())
+		var origin_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
 		var cells = placement_district.get_rotated_offsets().map(func(offset): return origin_cell + offset)
 		var placeable = placeable_in_bounds(placement_district, origin_cell, bounds)
 		for cell in cells:
 			if bounds.has_point(cell):
 				var atlas_idx = placement_district.get_atlas_index() if placeable else ERROR_DIST_IDX
-				$PreviewLayer.set_cell(cell, 1, atlas_idx)
+				$Grids/PreviewLayer.set_cell(cell, 1, atlas_idx)
 	pass
 
 func _input(event):
 	if event is InputEventMouseButton:
-		var cell = $Map.local_to_map(get_local_mouse_position())
-		if !bounds.has_point(cell):
-			pass
-		var curr_tile_index = $Map.get_cell_atlas_coords(cell)
-		if placement_tile && curr_tile_index == BLANK_TILE_IDX && event.button_index == MOUSE_BUTTON_LEFT:
-			handle_tile_map_update(cell, placement_tile)
-			placement_tile = null
+		var cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
+		if bounds.has_point(cell):		
+			var curr_tile_index = $Grids/Map.get_cell_atlas_coords(cell)
+			if placement_tile && curr_tile_index == BLANK_TILE_IDX && event.button_index == MOUSE_BUTTON_LEFT:
+				handle_tile_map_update(cell, placement_tile)
+				placement_tile = null
 		if placement_district && event.button_index == MOUSE_BUTTON_LEFT:
 			if placeable_in_bounds(placement_district, cell, bounds):
 				for off in placement_district.get_rotated_offsets():
-					$DistrictLayer.set_cell(cell + off, 1, placement_district.get_atlas_index())
+					$Grids/DistrictLayer.set_cell(cell + off, 1, placement_district.get_atlas_index())
 				placement_district = null
 	
 	if placement_district != null && event is InputEventKey && event.is_pressed():
@@ -74,15 +73,15 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 	tile_placed.emit(tile_idx, tile_type)
 
 func get_tile_type_in_cell(target_cell: Vector2i) -> Tile.Type:
-	var cell_tile_data = $Map.get_cell_tile_data(target_cell)
+	var cell_tile_data = $Grids/Map.get_cell_tile_data(target_cell)
 	return cell_tile_data.get_custom_data(TILE_TYPE_LAYER_NAME)
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)
-	$Map.set_cell(target_cell, ATLAS_TEXTURE_LAYER_ID, tile_texture)
+	$Grids/Map.set_cell(target_cell, ATLAS_TEXTURE_LAYER_ID, tile_texture)
 
 func set_tile_type_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
-	var cell_tile_data = $Map.get_cell_tile_data(target_cell)
+	var cell_tile_data = $Grids/Map.get_cell_tile_data(target_cell)
 	cell_tile_data.set_custom_data(TILE_TYPE_LAYER_NAME, tile_type)
 
 func _on_button_pressed() -> void:
@@ -114,14 +113,16 @@ func placeable_in_bounds(district: District, cell: Vector2i, bounds: Rect2i) -> 
 	return district.get_rotated_offsets().all(func(off): 
 		var idx = cell + off
 		return bounds.has_point(idx) \
-			&& $DistrictLayer.get_cell_atlas_coords(idx) == Vector2i(-1, -1)
+			&& $Grids/DistrictLayer.get_cell_atlas_coords(idx) == Vector2i(-1, -1)
 	)
 	
 	
 func setup_grid(size: int):
 	grid_size = size
-	bounds = Rect2i(1, 1, grid_size, grid_size)
-	$BG.set_grid_bounds(bounds)
+	bounds = Rect2i(0, 0, grid_size, grid_size)
+	$Grids/BG.set_grid_bounds(bounds)
+	
+	$Grids.scale = Vector2(15.0/grid_size, 15.0/grid_size)
 	pass
 
 

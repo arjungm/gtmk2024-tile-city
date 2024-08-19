@@ -3,7 +3,7 @@ extends TileMapLayer
 @export var bounds: Rect2i
 
 const ATLAS_LAYER_ID = 1
-const BG_TILE_IDX = Vector2i(16, 5)
+const BG_TILE_IDX = Vector2i(17, 9)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
