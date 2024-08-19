@@ -16,7 +16,8 @@ func get_tile_array() -> Array[Tile.Type]:
 		for i in range(contained_tiles[k]):
 			tile_array.append(k)
 	return tile_array
-	
+
+
 func get_random_tile() -> Tile.Type:
 	var tile_array = get_tile_array()
 	if tile_array.size() == 0:
@@ -25,6 +26,7 @@ func get_random_tile() -> Tile.Type:
 	var tile_type = tile_array[rand_idx]
 	contained_tiles[tile_type] -= 1
 	return tile_array[rand_idx]
+
 
 func draw_tile() -> Tile.Type:
 	for t in contained_tiles:

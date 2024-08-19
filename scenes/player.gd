@@ -81,13 +81,14 @@ func _on_grid_tile_placed(tile_idx: int, tile_type: Tile.Type) -> void:
 	$DiscardZone.put_tile(tile_type)
 	handle_tile_placement(tile_type)
 
+
 func handle_tile_placement(tile_type: Tile.Type):
 	match tile_type:
 		Tile.Type.ROAD:
 			draw_gain_tile()
 		_:
 			pass
-	
+
 
 func _on_end_round_button_pressed() -> void:
 	update_tile_simulation() # Replace with function body.
