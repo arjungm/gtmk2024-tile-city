@@ -42,7 +42,7 @@ func _on_refill_button_pressed() -> void:
 func draw_gain_tile():
 	var drawn_tile = $TileBag.draw_tile()
 	if drawn_tile == Tile.Type.UNKNOWN:
-		pass
+		return
 	$PlayerHand.gain_tile(drawn_tile)
 
 func _on_discard_button_pressed() -> void:
