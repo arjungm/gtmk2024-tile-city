@@ -18,8 +18,9 @@ const ATLAS_TEXTURE_LAYER_ID = 1
 var placement_tile: TileHandItem = null
 var placement_district: District = null
 
-# From TileMapLayer Parent
+# From Grid Parent
 var get_farm_square_picking_active_fn = null
+var get_house_line_picking_mode_fn = null
 
 const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
 
@@ -30,6 +31,7 @@ func get_game_map():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	get_farm_square_picking_active_fn = $GridControlsBox/FarmSquareBox.get_farm_square_picking_active
+	get_house_line_picking_mode_fn = $GridControlsBox/HouseLineBox.get_current_picking_mode
 	setup_grid(grid_size)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -53,23 +55,35 @@ func _process(delta: float) -> void:
 				$Grids/PreviewLayer.set_cell(cell, 1, atlas_idx)
 				
 	process_farm_square_mode()
+	
+func process_tile_placement():
+	pass
+	
+func process_district_placement():
+	pass
 
 func process_farm_square_mode():
 	if get_farm_square_picking_active_fn.call():
 		var mouse_cell: Vector2i = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
 		if not is_farm_cell(mouse_cell):
+			$GridControlsBox/FarmSquareBox.clear_preview_farm_square()
 			return
 		var depth = compute_largest_square(mouse_cell)
-		# go up-right and down-left
 		var max_x = mouse_cell.x + depth
 		var max_y = mouse_cell.y + depth
 		var min_x = mouse_cell.x
 		var min_y = mouse_cell.y
+		# store the result in the FarmSquareBox
+		$GridControlsBox/FarmSquareBox.register_preview_farm_square(min_x, min_y, depth)
+		# render the preview of the farm square
 		for x in range(min_x, max_x+1):
 			for y in range(min_y, max_y+1):
 				$Grids/PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
 				
 func compute_largest_square(start_cell: Vector2i) -> int:
+	# Dumbest implementation: starting from a given cell, it checks the neighbors at 1-distance.
+	# Then if all three are valid farm squares, then we know 2x2 exists. Repeat this for distance
+	# incrementing by 1 when it passes the farm-square check.
 	var ret_depth = 0
 	var max_depth = 1
 	var check_next_layer = true
@@ -89,36 +103,53 @@ func compute_largest_square(start_cell: Vector2i) -> int:
 			max_depth = max_depth + 1
 	return ret_depth
 
-func check_farm_cells_generic(farm_cell: Vector2i, dx: int, dy: int) -> bool:
-	var neighbor_1 = farm_cell + Vector2i(dx,0)
-	var neighbor_2 = farm_cell + Vector2i(0,dy)
-	var neighbor_3 = farm_cell + Vector2i(dx,dy)
-	if is_farm_cell(neighbor_1) && is_farm_cell(neighbor_2) && is_farm_cell(neighbor_3):
-		return true
-	return false
-
 func is_farm_cell(cell: Vector2i)-> bool:
 	if bounds.has_point(cell) and get_tile_type_in_cell(cell)==Tile.Type.FARM:
 		return true
 	return false
 
 func _input(event):
-	if event is InputEventMouseButton:
-		var cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
-		if bounds.has_point(cell):		
-			var curr_tile_index = $Grids/Map.get_cell_atlas_coords(cell)
-			if placement_tile && curr_tile_index == BLANK_TILE_IDX && event.button_index == MOUSE_BUTTON_LEFT:
-				handle_tile_map_update(cell, placement_tile)
-				placement_tile = null
-		if placement_district && event.button_index == MOUSE_BUTTON_LEFT:
-			if placeable_in_bounds(placement_district, cell, bounds):
-				for off in placement_district.get_rotated_offsets():
-					$Grids/DistrictLayer.set_cell(cell + off, 1, placement_district.get_atlas_index())
-				placement_district = null
-	
-	if placement_district != null && event is InputEventKey && event.is_pressed():
-		if event.keycode == 82: # "r" key TODO: change to correct input
-			placement_district.rotate()
+	if event is InputEventKey && event.is_pressed() && event.keycode == 82:
+		handle_district_rotation()
+	if event is InputEventMouseButton && event.button_index == MOUSE_BUTTON_LEFT:
+		var clicked_cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
+		try_confirm_tile_placement(clicked_cell)
+		try_confirm_district_placement(clicked_cell)
+		try_confirm_farm_square_marked()
+
+
+func try_confirm_tile_placement(cell: Vector2i) -> bool:
+	var curr_tile_index = $Grids/Map.get_cell_atlas_coords(cell)
+	if bounds.has_point(cell) && placement_tile && curr_tile_index == BLANK_TILE_IDX:
+		handle_tile_map_update(cell, placement_tile)
+		placement_tile = null
+		return true
+	return false
+
+func try_confirm_district_placement(cell: Vector2i) -> bool:
+	if placement_district and placeable_in_bounds(placement_district, cell, bounds):
+		for off in placement_district.get_rotated_offsets():
+			$Grids/DistrictLayer.set_cell(cell + off, ATLAS_TEXTURE_LAYER_ID, placement_district.get_atlas_index())
+			placement_district = null
+			return true
+	return false
+
+func try_confirm_farm_square_marked():
+	# fetch the bounds for the farm from the preview layer
+	if not get_farm_square_picking_active_fn.call():
+		return
+	var bounding_box = $GridControlsBox/FarmSquareBox.get_preview_farm_square_bounds()
+	if bounding_box.min_x == -1:
+		return
+	for cx in range(bounding_box.min_x, bounding_box.max_x + 1):
+		for cy in range(bounding_box.min_y, bounding_box.max_y + 1):
+			var cell = Vector2i(cx, cy)
+			$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
+
+func handle_district_rotation():
+	if placement_district != null:
+		placement_district.rotate()
 
 func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem):
 	var tile_type = tile_hand_item.tile_type

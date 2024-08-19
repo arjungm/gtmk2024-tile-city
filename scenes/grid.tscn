@@ -62,6 +62,10 @@ script = ExtResource("2_8x6e1")
 [node name="Map" type="TileMapLayer" parent="Grids"]
 tile_set = ExtResource("1_x6cbu")
 
+[node name="FarmSquare" type="TileMapLayer" parent="Grids"]
+modulate = Color(1, 1, 1, 0.490196)
+tile_set = ExtResource("1_x6cbu")
+
 [node name="DistrictLayer" type="TileMapLayer" parent="Grids"]
 modulate = Color(1, 1, 1, 0.784314)
 tile_set = ExtResource("1_x6cbu")
