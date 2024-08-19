@@ -40,15 +40,8 @@ func render_farm_square_layer_on_cell(cell: Vector2i):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	$Grids/PreviewLayer.clear()
-	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
-		var preview_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
-		var cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
-		if bounds.has_point(preview_cell):
-			if ($Grids/Map.get_cell_atlas_coords(cell) == BLANK_TILE_IDX):
-				$Grids/PreviewLayer.set_cell(preview_cell, 1, tile_type_to_atlas_index(placement_tile.tile_type))
-			else:
-				$Grids/PreviewLayer.set_cell(preview_cell, 1, ERROR_TILE_IDX)
-	elif placement_district != null:
+	
+	if placement_district != null:
 		var origin_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
 		var cells = placement_district.get_rotated_offsets().map(func(offset): return origin_cell + offset)
 		var placeable = placeable_in_bounds(placement_district, origin_cell, bounds)
@@ -56,11 +49,18 @@ func _process(delta: float) -> void:
 			if bounds.has_point(cell):
 				var atlas_idx = placement_district.get_atlas_index() if placeable else ERROR_DIST_IDX
 				$Grids/PreviewLayer.set_cell(cell, 1, atlas_idx)
-				
+	
+	process_tile_placement()
 	process_farm_square_mode()
 	
 func process_tile_placement():
-	pass
+	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
+		var preview_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
+		var cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
+		if bounds.has_point(preview_cell):
+			var placeable = $Grids/Map.can_place_tile_in_cell(cell, placement_tile.tile_type)
+			var atlas_idx = tile_type_to_atlas_index(placement_tile.tile_type) if placeable else ERROR_TILE_IDX
+			$Grids/PreviewLayer.set_cell(preview_cell, 1, atlas_idx)
 	
 func process_district_placement():
 	pass
@@ -123,9 +123,8 @@ func _input(event):
 
 
 func try_confirm_tile_placement(cell: Vector2i) -> bool:
-	var curr_tile_index = $Grids/Map.get_cell_atlas_coords(cell)
-	if bounds.has_point(cell) && curr_tile_index == BLANK_TILE_IDX:
-		if placement_tile:
+	if bounds.has_point(cell):
+		if placement_tile && $Grids/Map.can_place_tile_in_cell(cell, placement_tile.tile_type):
 			handle_tile_map_update(cell, placement_tile)
 			placement_tile = null
 			return true
