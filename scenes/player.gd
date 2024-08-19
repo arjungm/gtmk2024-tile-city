@@ -3,9 +3,9 @@ extends Node2D
 signal start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type)
 
 var starting_tiles = {
-	Tile.Type.HOUSE: 1,
-	Tile.Type.ROAD: 1,
-	Tile.Type.FARM: 8
+	Tile.Type.HOUSE: 4,
+	Tile.Type.ROAD: 2,
+	Tile.Type.FARM: 6
 }
 
 @export var money: int = 0
@@ -28,6 +28,8 @@ func get_food():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$TileBag.refill_with(starting_tiles)
+	for i in range($PlayerHand.get_maximum_hand_size()):
+		draw_gain_tile()
 	$HUD.get_money_fn = get_money
 	$HUD.get_population_fn = get_population
 	$HUD.get_food_fn = get_food
@@ -42,7 +44,7 @@ func _on_refill_button_pressed() -> void:
 		draw_gain_tile()
 
 func draw_gain_tile():
-	var drawn_tile = $TileBag.draw_tile()
+	var drawn_tile = $TileBag.get_random_tile()
 	if drawn_tile == Tile.Type.UNKNOWN:
 		return
 	$PlayerHand.gain_tile(drawn_tile)
