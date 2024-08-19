@@ -9,23 +9,21 @@ var starting_tiles = {
 }
 
 @export var money: int = 0
-@export var population: int = 0
-@export var food: int = 0
-
-var bonus_food: int = 0
 
 @export var get_game_map_fn = null
 
+# Grid/Map query functions
+var fn_get_num_placed_tiles = null
 var fn_get_bonus_food = null
 
 func get_money():
 	return money
 
 func get_population():
-	return population
+	return fn_get_num_placed_tiles.call(Tile.Type.HOUSE)
 	
 func get_food():
-	return food + fn_get_bonus_food.call()
+	return fn_get_num_placed_tiles.call(Tile.Type.FARM) + fn_get_bonus_food.call()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -59,7 +57,7 @@ func _on_discard_button_pressed() -> void:
 
 func can_place_tile(tile_type: Tile.Type) -> bool:
 	if tile_type == Tile.Type.HOUSE:
-		return population < food
+		return get_population() < get_food()
 	return true
 
 func _on_place_button_pressed() -> void:
@@ -83,10 +81,6 @@ func _on_grid_tile_placed(tile_idx: int, tile_type: Tile.Type) -> void:
 
 func handle_tile_placement(tile_type: Tile.Type):
 	match tile_type:
-		Tile.Type.FARM:
-			food += 1
-		Tile.Type.HOUSE:
-			population += 1
 		Tile.Type.ROAD:
 			draw_gain_tile()
 		_:

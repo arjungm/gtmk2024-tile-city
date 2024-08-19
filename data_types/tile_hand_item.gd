@@ -9,4 +9,3 @@ extends Resource
 func _init(p_idx = 0, p_type = Tile.Type.UNKNOWN):
 	tile_idx = p_idx
 	tile_type = p_type
-	print("my type ", tile_type)

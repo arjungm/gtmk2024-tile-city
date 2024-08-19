@@ -124,10 +124,11 @@ func _input(event):
 
 func try_confirm_tile_placement(cell: Vector2i) -> bool:
 	var curr_tile_index = $Grids/Map.get_cell_atlas_coords(cell)
-	if bounds.has_point(cell) && placement_tile && curr_tile_index == BLANK_TILE_IDX:
-		handle_tile_map_update(cell, placement_tile)
-		placement_tile = null
-		return true
+	if bounds.has_point(cell) && curr_tile_index == BLANK_TILE_IDX:
+		if placement_tile:
+			handle_tile_map_update(cell, placement_tile)
+			placement_tile = null
+			return true
 	return false
 
 func try_confirm_district_placement(cell: Vector2i) -> bool:
