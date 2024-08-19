@@ -1,6 +1,6 @@
 extends Node2D
 
-var maximum_hand_size = 7
+var maximum_hand_size = 10
 
 var tiles_in_hand: Array[Tile.Type] = []
 

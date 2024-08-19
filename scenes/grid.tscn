@@ -1,10 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://dl7yjxvv30uv5"]
+[gd_scene load_steps=5 format=3 uid="uid://dl7yjxvv30uv5"]
 
 [ext_resource type="TileSet" uid="uid://bqp0j1v0raj46" path="res://scenes/grid.tres" id="1_x6cbu"]
 [ext_resource type="Script" path="res://scenes/grid.gd" id="2_ard0o"]
+[ext_resource type="Script" path="res://scenes/house_line_box.gd" id="3_m6dip"]
+[ext_resource type="Script" path="res://scenes/farm_square_box.gd" id="4_rc6g4"]
 
 [node name="TileMapLayer" type="Node2D"]
 script = ExtResource("2_ard0o")
+
+[node name="GridControlsBox" type="VBoxContainer" parent="."]
+offset_left = 453.0
+offset_top = 172.0
+offset_right = 745.0
+offset_bottom = 314.0
+
+[node name="HouseLineBox" type="HBoxContainer" parent="GridControlsBox"]
+layout_mode = 2
+script = ExtResource("3_m6dip")
+
+[node name="HouseLineButton" type="Button" parent="GridControlsBox/HouseLineBox"]
+layout_mode = 2
+text = "Toggle House Zones"
+
+[node name="HouseLineMode" type="Label" parent="GridControlsBox/HouseLineBox"]
+layout_mode = 2
+text = "Inactive"
+
+[node name="FarmSquareBox" type="HBoxContainer" parent="GridControlsBox"]
+layout_mode = 2
+script = ExtResource("4_rc6g4")
+
+[node name="FarmSquareButton" type="Button" parent="GridControlsBox/FarmSquareBox"]
+layout_mode = 2
+toggle_mode = true
+text = "Toggle Farm Zones"
+
+[node name="FarmSquareMode" type="Label" parent="GridControlsBox/FarmSquareBox"]
+layout_mode = 2
+text = "Inactive"
 
 [node name="Map" type="TileMapLayer" parent="."]
 tile_set = ExtResource("1_x6cbu")
@@ -26,4 +59,6 @@ offset_right = 589.0
 offset_bottom = 153.0
 text = "Generate District"
 
+[connection signal="pressed" from="GridControlsBox/HouseLineBox/HouseLineButton" to="GridControlsBox/HouseLineBox" method="_on_house_line_button_pressed"]
+[connection signal="toggled" from="GridControlsBox/FarmSquareBox/FarmSquareButton" to="GridControlsBox/FarmSquareBox" method="_on_farm_square_button_toggled"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

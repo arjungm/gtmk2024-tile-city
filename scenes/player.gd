@@ -3,9 +3,9 @@ extends Node2D
 signal start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type)
 
 var starting_tiles = {
-	Tile.Type.HOUSE: 4,
-	Tile.Type.ROAD: 2,
-	Tile.Type.FARM: 3
+	Tile.Type.HOUSE: 1,
+	Tile.Type.ROAD: 1,
+	Tile.Type.FARM: 8
 }
 
 @export var money: int = 0

@@ -18,12 +18,18 @@ const ATLAS_TEXTURE_LAYER_ID = 1
 var placement_tile: TileHandItem = null
 var placement_district: District = null
 
+# From TileMapLayer Parent
+var get_farm_square_picking_active_fn = null
+
+const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
+
 func get_game_map():
 	for coords in $Map.get_used_cells():
 		print(coords, " ", get_tile_type_in_cell(coords))
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	get_farm_square_picking_active_fn = $GridControlsBox/FarmSquareBox.get_farm_square_picking_active
 	for i in range(bounds.position.x, bounds.end.x):
 		for j in range(bounds.position.y, bounds.end.y):
 			$Map.set_cell(Vector2i(i, j), 1, BLANK_TILE_IDX)
@@ -47,7 +53,56 @@ func _process(delta: float) -> void:
 			if bounds.has_point(cell):
 				var atlas_idx = placement_district.get_atlas_index() if placeable else ERROR_DIST_IDX
 				$PreviewLayer.set_cell(cell, 1, atlas_idx)
-	pass
+				
+	process_farm_square_mode()
+
+func process_farm_square_mode():
+	if get_farm_square_picking_active_fn.call():
+		var mouse_cell: Vector2i = $PreviewLayer.local_to_map(get_local_mouse_position())
+		if not is_farm_cell(mouse_cell):
+			return
+		var depth = compute_largest_square(mouse_cell)
+		# go up-right and down-left
+		var max_x = mouse_cell.x + depth
+		var max_y = mouse_cell.y + depth
+		var min_x = mouse_cell.x
+		var min_y = mouse_cell.y
+		for x in range(min_x, max_x+1):
+			for y in range(min_y, max_y+1):
+				$PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+				
+func compute_largest_square(start_cell: Vector2i) -> int:
+	var ret_depth = 0
+	var max_depth = 1
+	var check_next_layer = true
+	while check_next_layer:
+		for x in range(start_cell.x, start_cell.x + max_depth + 1):
+			var check_cell = Vector2i(x, start_cell.y+max_depth)
+			if not is_farm_cell(check_cell):
+				check_next_layer = false
+		if not check_next_layer:
+			break
+		for y in range(start_cell.y, start_cell.y + max_depth + 1):
+			var check_cell = Vector2i(start_cell.x+max_depth, y)
+			if not is_farm_cell(check_cell):
+				check_next_layer = false
+		if check_next_layer:
+			ret_depth = max_depth
+			max_depth = max_depth + 1
+	return ret_depth
+
+func check_farm_cells_generic(farm_cell: Vector2i, dx: int, dy: int) -> bool:
+	var neighbor_1 = farm_cell + Vector2i(dx,0)
+	var neighbor_2 = farm_cell + Vector2i(0,dy)
+	var neighbor_3 = farm_cell + Vector2i(dx,dy)
+	if is_farm_cell(neighbor_1) && is_farm_cell(neighbor_2) && is_farm_cell(neighbor_3):
+		return true
+	return false
+
+func is_farm_cell(cell: Vector2i)-> bool:
+	if bounds.has_point(cell) and get_tile_type_in_cell(cell)==Tile.Type.FARM:
+		return true
+	return false
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -77,7 +132,9 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 
 func get_tile_type_in_cell(target_cell: Vector2i) -> Tile.Type:
 	var cell_tile_data = $Map.get_cell_tile_data(target_cell)
-	return cell_tile_data.get_custom_data(TILE_TYPE_LAYER_NAME)
+	if cell_tile_data:
+		return cell_tile_data.get_custom_data(TILE_TYPE_LAYER_NAME)
+	return Tile.Type.UNKNOWN
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)
