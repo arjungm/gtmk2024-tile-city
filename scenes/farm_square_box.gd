@@ -6,10 +6,14 @@ var preview_farm_square_min_x: int = -1
 var preview_farm_square_min_y: int = -1
 var preview_farm_square_depth: int = -1
 
+var registered_farm_squares: Array[Dictionary] = []
+
+# FarmSquareLayer callback to render
+var farm_square_layer_render_fn = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -17,6 +21,32 @@ func _process(delta: float) -> void:
 		$FarmSquareMode.text = "Active"
 	else:
 		$FarmSquareMode.text = "Inactive"
+	# render the farm-square in the layer map
+	for fs in registered_farm_squares:
+		for cx in range(fs.min_x, fs.max_x + 1):
+			for cy in range(fs.min_y, fs.max_y + 1):
+				var cell = Vector2i(cx, cy)
+				farm_square_layer_render_fn.call(cell)
+		
+func register_new_farm_square(bounding_box: Dictionary) -> bool:
+	for cx in range(bounding_box.min_x, bounding_box.max_x + 1):
+		for cy in range(bounding_box.min_y, bounding_box.max_y + 1):
+			var cell = Vector2i(cx, cy)
+			if check_cell_in_registered_farm_squares(cell):
+				return false
+	registered_farm_squares.append(bounding_box)
+	return true
+
+func check_cell_in_registered_farm_squares(cell: Vector2i):
+	# Returns true if the cell is in any registered farm square.
+	for fs in registered_farm_squares:
+		if check_cell_in_farm_square(cell, fs):
+			return true
+	return false
+
+func check_cell_in_farm_square(cell: Vector2i, farm_square: Dictionary):
+	# Returns true if the cell is contained in the square.
+	return (farm_square.min_x <= cell.x and cell.x <= farm_square.max_x and farm_square.min_y <= cell.y and cell.y <= farm_square.max_y)
 
 func register_preview_farm_square(min_x: int, min_y: int, depth: int):
 	preview_farm_square_min_x = min_x

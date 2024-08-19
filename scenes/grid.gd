@@ -32,7 +32,12 @@ func get_game_map():
 func _ready() -> void:
 	get_farm_square_picking_active_fn = $GridControlsBox/FarmSquareBox.get_farm_square_picking_active
 	get_house_line_picking_mode_fn = $GridControlsBox/HouseLineBox.get_current_picking_mode
+	# Hook up farm square layer rendering
+	$GridControlsBox/FarmSquareBox.farm_square_layer_render_fn = render_farm_square_layer_on_cell
 	setup_grid(grid_size)
+
+func render_farm_square_layer_on_cell(cell: Vector2i):
+	$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -74,11 +79,12 @@ func process_farm_square_mode():
 		var min_x = mouse_cell.x
 		var min_y = mouse_cell.y
 		# store the result in the FarmSquareBox
-		$GridControlsBox/FarmSquareBox.register_preview_farm_square(min_x, min_y, depth)
-		# render the preview of the farm square
-		for x in range(min_x, max_x+1):
-			for y in range(min_y, max_y+1):
-				$Grids/PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+		if depth > 0:
+			$GridControlsBox/FarmSquareBox.register_preview_farm_square(min_x, min_y, depth)
+			# render the preview of the farm square
+			for x in range(min_x, max_x+1):
+				for y in range(min_y, max_y+1):
+					$Grids/PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
 				
 func compute_largest_square(start_cell: Vector2i) -> int:
 	# Dumbest implementation: starting from a given cell, it checks the neighbors at 1-distance.
@@ -141,10 +147,7 @@ func try_confirm_farm_square_marked():
 	var bounding_box = $GridControlsBox/FarmSquareBox.get_preview_farm_square_bounds()
 	if bounding_box.min_x == -1:
 		return
-	for cx in range(bounding_box.min_x, bounding_box.max_x + 1):
-		for cy in range(bounding_box.min_y, bounding_box.max_y + 1):
-			var cell = Vector2i(cx, cy)
-			$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+	$GridControlsBox/FarmSquareBox.register_new_farm_square(bounding_box)
 	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
 
 func handle_district_rotation():
