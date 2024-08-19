@@ -13,17 +13,16 @@ var starting_tiles = {
 @export var get_game_map_fn = null
 
 # Grid/Map query functions
-var fn_get_num_placed_tiles = null
-var fn_get_bonus_food = null
+var fn_score_grid = null
 
 func get_money():
 	return money
 
 func get_population():
-	return fn_get_num_placed_tiles.call(Tile.Type.HOUSE)
+	return fn_score_grid.call().population
 	
 func get_food():
-	return fn_get_num_placed_tiles.call(Tile.Type.FARM) + fn_get_bonus_food.call()
+	return fn_score_grid.call().food
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

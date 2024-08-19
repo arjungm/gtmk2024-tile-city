@@ -6,8 +6,7 @@ var get_game_map_fn = null
 func _ready() -> void:
 	get_game_map_fn = $Grid.get_game_map
 	$Player.get_game_map_fn = get_game_map_fn
-	$Player.fn_get_bonus_food = $Grid/GridControlsBox/FarmSquareBox.get_bonus_food_production
-	$Player.fn_get_num_placed_tiles = $Grid/Grids/Map.get_num_placed_tiles
+	$Player.fn_score_grid = $Grid.score_grid
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -2,6 +2,7 @@ extends Node2D
 
 const TileHandItem = preload("res://data_types/tile_hand_item.gd")
 const District = preload("res://data_types/district.gd")
+const Score = preload("res://data_types/score.gd")
 
 signal tile_placed(tile_idx: int, tile_type: Tile.Type)
 
@@ -224,3 +225,16 @@ func _on_expand_button_pressed() -> void:
 
 func _on_reset_button_pressed() -> void:
 	setup_grid(5)
+	
+func score_grid() -> Score:
+	# Score food
+	var food = $Grids/Map.get_num_placed_tiles(Tile.Type.FARM) + \
+				$GridControlsBox/FarmSquareBox.get_bonus_food_production()
+	
+	# Score population
+	var pop = $Grids/Map.get_num_placed_tiles(Tile.Type.HOUSE)
+	
+	# Earn money (?)
+	var money = 0
+	
+	return Score.new(pop, money, food)
