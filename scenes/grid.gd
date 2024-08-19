@@ -11,6 +11,8 @@ const BLANK_TILE_IDX = Vector2i(-1, -1)
 const ERROR_TILE_IDX = Vector2i(14, 11)
 const ERROR_DIST_IDX = Vector2i(15, 2)
 
+const GOAL_TILE_IDX = Vector2i(12, 8)
+
 const ATLAS_TEXTURE_LAYER_ID = 1
 
 var placement_tile: TileHandItem = null
@@ -21,6 +23,8 @@ var get_farm_square_picking_active_fn = null
 var get_house_line_picking_mode_fn = null
 
 const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
+
+var goal_cell: Vector2i = Vector2i.ZERO
 
 func get_game_map():
 	for coords in $Grids/Map.get_used_cells():
@@ -158,6 +162,8 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 	set_tile_texture_in_cell(target_cell, tile_type)
 	$Grids/Map.set_tile_type_in_cell(target_cell, tile_type)
 	tile_placed.emit(tile_idx, tile_type)
+	if target_cell == goal_cell:
+		setup_grid(grid_size + 3)
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)
@@ -200,6 +206,13 @@ func setup_grid(size: int):
 	grid_size = size
 	bounds = Rect2i(0, 0, grid_size, grid_size)
 	$Grids/BG.set_grid_bounds(bounds)
+	
+	
+	var pos = randi() % size
+	# Swaps which side the goal on is each expansion
+	goal_cell = Vector2i(pos, size - 1) if goal_cell.y <= goal_cell.x else Vector2i(size - 1, pos)
+	# No data being set so the cell is still "empty"
+	$Grids/Map.set_cell(goal_cell, ATLAS_TEXTURE_LAYER_ID, GOAL_TILE_IDX)
 	
 	$Grids.scale = Vector2(15.0/grid_size, 15.0/grid_size)
 	pass
