@@ -42,6 +42,7 @@ func _process(delta: float) -> void:
 	$ControlButtons/RefillButton.display_cost = get_current_refill_cost()
 	$ControlButtons/RefillButton.disabled = not (can_afford_refill() and can_refill_hand())
 	$ControlButtons/PlaceButton.disabled = ($PlayerHand.get_tile_count() == 0)
+	$ControlButtons/EndRoundButton.display_round = round_tracker
 	
 func can_afford_refill():
 	return money >= get_current_refill_cost()
@@ -75,6 +76,8 @@ func refill_hand_from_bag():
 		num_to_draw = num_desired_tiles - num_to_draw
 		for i in range(num_to_draw):
 			draw_gain_tile()
+	
+	return num_desired_tiles
 
 func draw_gain_tile():
 	var drawn_tile = $TileBag.get_random_tile()
@@ -125,7 +128,10 @@ func handle_tile_placement(tile_type: Tile.Type):
 
 func _on_end_round_button_pressed() -> void:
 	# TODO: compute the money gain from income
-	money += 10
+	var gained = 10
+	money += gained
 	round_tracker += 1
 	num_refills_used = 0
-	refill_hand_from_bag()
+	var num_draws = refill_hand_from_bag()
+	var notif_msg = "Gained $" + str(gained) + "\nDrew " + str(num_draws) + " tiles"
+	$Messages.notify_generic.emit(notif_msg)

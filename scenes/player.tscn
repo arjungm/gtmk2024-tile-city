@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=10 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
 [ext_resource type="Script" path="res://scenes/refill_button.gd" id="3_3b8ix"]
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
+[ext_resource type="Script" path="res://scenes/end_round_button.gd" id="4_cjryd"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
 [ext_resource type="Script" path="res://scenes/hudbg.gd" id="6_mypyl"]
 [ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
@@ -58,6 +59,7 @@ script = ExtResource("3_3b8ix")
 [node name="EndRoundButton" type="Button" parent="ControlButtons"]
 layout_mode = 2
 text = "end round"
+script = ExtResource("4_cjryd")
 
 [node name="DiscardZone" type="Node2D" parent="."]
 position = Vector2(-186, 534)
@@ -174,5 +176,6 @@ autowrap_mode = 2
 [connection signal="pressed" from="ControlButtons/PlaceButton" to="." method="_on_place_button_pressed"]
 [connection signal="pressed" from="ControlButtons/RefillButton" to="." method="_on_refill_button_pressed"]
 [connection signal="pressed" from="ControlButtons/EndRoundButton" to="." method="_on_end_round_button_pressed"]
+[connection signal="notify_generic" from="Messages" to="Messages" method="_on_notify_generic"]
 [connection signal="notify_warning" from="Messages" to="Messages" method="_on_notify_warning"]
 [connection signal="timeout" from="Messages/FadeTimer" to="Messages" method="_on_fade_timer_timeout"]

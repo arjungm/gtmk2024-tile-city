@@ -1,6 +1,8 @@
 extends Node2D
 
-signal notify_warning(message: String)
+signal notify_warning(msg_type: MessageTypes)
+
+signal notify_generic(message: String)
 
 enum MessageTypes {
 	INVALID_PLACEMENT_POP_FOOD,
@@ -29,11 +31,14 @@ func _process(delta: float) -> void:
 
 
 func _on_notify_warning(msg_type: MessageTypes) -> void:
-	print("notify")
 	show_message(get_message_string(msg_type))
 	$FadeTimer.start()
 
 func _on_fade_timer_timeout() -> void:
-	print("timeout")
 	clear_message()
 	$FadeTimer.stop()
+
+
+func _on_notify_generic(message: String) -> void:
+	show_message(message)
+	$FadeTimer.start()
