@@ -23,7 +23,7 @@ func get_money():
 	return money
 
 func get_population():
-	return fn_score_grid.call().population
+	return fn_score_grid.call().income
 	
 func get_food():
 	return fn_score_grid.call().food
