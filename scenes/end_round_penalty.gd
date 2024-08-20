@@ -13,6 +13,6 @@ func _process(delta: float) -> void:
 	set_text(score)
 
 
-func _on_player_flag_scoring_changed(potential_fs: int, potential_er_pen: int) -> void:
+func _on_player_flag_scoring_changed(potential_fs: int, potential_er_pen: int, grid_size: int) -> void:
 	print('ding')
 	potential_end_round_penalty = potential_er_pen

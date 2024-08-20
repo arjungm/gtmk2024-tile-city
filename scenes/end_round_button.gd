@@ -9,4 +9,4 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	text = "(E) End Round (+" + str(display_penalty) + " penalty)"
+	text = "(E) End Round (-" + str(display_penalty) + " score)"

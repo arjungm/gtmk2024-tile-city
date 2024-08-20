@@ -192,24 +192,32 @@ Be careful when pressing End Round. You will incur a penalty to your score for e
 [node name="CenterContainer" type="CenterContainer" parent="."]
 offset_left = 1396.0
 offset_top = 64.0
-offset_right = 1776.0
+offset_right = 1796.0
 offset_bottom = 344.0
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="CenterContainer"]
-custom_minimum_size = Vector2(380, 270)
+custom_minimum_size = Vector2(400, 270)
 layout_mode = 2
 color = Color(0.439216, 0.356863, 0.0392157, 1)
 
 [node name="FlagScoreContainer" type="VBoxContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(350, 260)
+custom_minimum_size = Vector2(380, 260)
 layout_mode = 2
 metadata/_edit_group_ = true
 
+[node name="CurrentFlagScore" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/bold_italics_font_size = 23
+theme_override_font_sizes/normal_font_size = 20
+text = "Current Score: 25 (Efficiency 100%)"
+script = ExtResource("5_cqnt2")
+
 [node name="Label" type="Label" parent="CenterContainer/FlagScoreContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 23
-text = "Scoring History"
+theme_override_font_sizes/font_size = 16
+text = "Previous Scores:"
 
 [node name="PreviousFlagScores" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
 layout_mode = 2
@@ -218,13 +226,8 @@ size_flags_stretch_ratio = 6.0
 bbcode_enabled = true
 script = ExtResource("4_5psvh")
 
-[node name="CurrentFlagScore" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Next Flag Score: 0"
-script = ExtResource("5_cqnt2")
-
 [node name="EndRoundPenalty" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 text = "Current Penalty: 0"

@@ -35,8 +35,7 @@ func get_num_used_cells() -> int:
 
 func get_potential_flag_score() -> int:
 	var total = grid_size*grid_size
-	var used = $Grids/Map.get_used_cells()
-	return (total-used.size())
+	return (total-get_num_used_cells())
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

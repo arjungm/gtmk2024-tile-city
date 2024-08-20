@@ -2,9 +2,9 @@ extends Node2D
 
 signal start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type)
 
-signal flag_score_changed(flag_score: int, end_round_penalty: int)
+signal flag_score_changed(flag_score: int, end_round_penalty: int, grid_size: int)
 
-signal flag_scoring_changed(potential_fs: int, potential_er_pen: int)
+signal flag_scoring_changed(potential_fs: int, potential_er_pen: int, grid_size: int)
 
 var starting_tiles = {
 	Tile.Type.HOUSE: 4,
@@ -15,6 +15,7 @@ var starting_tiles = {
 var flag_score: int = 0
 var flag_count: int = 0
 var end_round_penalty: int = 0
+var current_grid_size: int = 5
 
 @export var money: int = 10
 @export var round_tracker: int = 1
@@ -142,7 +143,7 @@ func _on_grid_tile_placed(tile_idx: int, tile_type: Tile.Type) -> void:
 	$PlayerHand.remove_tile(tile_idx, tile_type)
 	$DiscardZone.put_tile(tile_type)
 	handle_tile_placement(tile_type)
-	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, current_grid_size)
 
 func handle_tile_placement(tile_type: Tile.Type):
 	match tile_type:
@@ -162,17 +163,18 @@ func _on_end_round_button_pressed() -> void:
 	var notif_msg = "Gained $" + str(gained) + "\nDrew " + str(num_draws) + " tiles"
 	end_round_penalty += (get_num_used_cells_fn.call()+1)/2
 	$Messages.notify_generic.emit(notif_msg)
-	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, current_grid_size)
 
 func _on_grid_flag_claimed(grid_size: int, used_tiles: int) -> void:
 	flag_score = (grid_size*grid_size) - used_tiles - end_round_penalty
-	flag_score_changed.emit(flag_score, end_round_penalty)
+	flag_score_changed.emit(flag_score, end_round_penalty, grid_size)
 	end_round_penalty = 0
-	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, grid_size)
 
 
 func _on_grid_grid_size_changed(grid_size: int) -> void:
-	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, grid_size)
+	current_grid_size = grid_size
 
 
 func _on_place_farm_pressed() -> void:

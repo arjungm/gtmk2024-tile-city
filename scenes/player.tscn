@@ -212,12 +212,12 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HUD" type="Node2D" parent="."]
-position = Vector2(75, 837)
+position = Vector2(77, 805)
 script = ExtResource("5_oyh3m")
 metadata/_edit_group_ = true
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
-custom_minimum_size = Vector2(200, 150)
+custom_minimum_size = Vector2(200, 240)
 offset_right = 200.0
 offset_bottom = 177.0
 
@@ -226,15 +226,16 @@ layout_mode = 2
 text = "Stats"
 
 [node name="CenterContainer" type="CenterContainer" parent="HUD/VBoxContainer2"]
+custom_minimum_size = Vector2(200, 240)
 layout_mode = 2
 
 [node name="HUDBG" type="ColorRect" parent="HUD/VBoxContainer2/CenterContainer"]
-custom_minimum_size = Vector2(200, 150)
+custom_minimum_size = Vector2(200, 240)
 layout_mode = 2
 color = Color(0, 0.286275, 0.309804, 1)
 
 [node name="HudInfoList" type="ItemList" parent="HUD/VBoxContainer2/CenterContainer"]
-custom_minimum_size = Vector2(180, 140)
+custom_minimum_size = Vector2(200, 240)
 layout_mode = 2
 
 [node name="Messages" type="Node2D" parent="."]
