@@ -8,7 +8,7 @@ signal flag_scoring_changed(potential_fs: int, potential_er_pen: int, grid_size:
 
 signal game_end
 # Hardcoded value -- size after 6 rounds is 26
-const GAME_END_SIZE = 25
+const GAME_END_SIZE = 19
 
 var starting_tiles = {
 	Tile.Type.HOUSE: 4,

@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://l0f6cjcls0c" path="res://images/road.png" id="5_kwuiq"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
 [ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
-[ext_resource type="PackedScene" path="res://scenes/texture_tile_list.tscn" id="12_gjsl3"]
+[ext_resource type="PackedScene" uid="uid://dbo6ismch44ng" path="res://scenes/texture_tile_list.tscn" id="12_gjsl3"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_kfchj"]
 device = -1

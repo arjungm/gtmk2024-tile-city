@@ -10,7 +10,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	var score: String = "Current Score: " + str(potential_flag_score)
+	var score: String = "Current Max Score: " + str(potential_flag_score)
 	score += " (Efficiency " + str(compute_percentage_goodness(current_grid_size, potential_flag_score)) + "%)"
 	set_text(score)
 

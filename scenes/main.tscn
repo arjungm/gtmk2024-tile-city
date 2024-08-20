@@ -51,11 +51,25 @@ text = "              [img=200x200]res://images/intro.png[/img]
 
 This is a tile-laying city-builder, where you place roads, houses and farms which you randomly draw from a bag.
 
-The goal is to build the largest city with the fewest number of tiles.
-
 You build your city by placing tiles from your hand. You start in the top left corner, and every tile must be adjacent to another existing tile.
 
-You can get more tiles to place by either spending money on \"Refills\" or Ending the Round."
+You can get more tiles to place by either spending money on \"Refills\" or Ending the Round.
+
+As you build your city your score will be recorded and it depends on how many tiles you've placed.
+
+The objective is to get a high score while claiming 6 Flags on the map. The next Flag is revealed when you build a tile on the current one.
+
+See the other tabs for more info on:
+
+[ul]
+What the purpose of each of the three Tiles are.
+[/ul]
+
+[ul]
+The mechanics behind scoring and doing well in the game.
+[/ul]
+
+"
 
 [node name="Farms" type="MarginContainer" parent="TabContainer"]
 visible = false
@@ -143,17 +157,19 @@ layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/flag_tile.png[/img]
 
-Scoring happens whenever you build any tile on a Flag
+Your current Score is shown in the top right corner of the game screen. It depends on how many empty tiles you have in your current map.
 
-Your score is recorded for the Flag # in the Scoring Tracker
+Scoring is recorded  whenever you build any tile on a Flag. 
 
-Your Flag # Score is equal to the number of EMPTY map tiles at the time of capturing the Flag
+Your High Score is what you get after 6 Flags are claimed!
 
-When you press \"End Round\" you will get a score penalty. The penalty is equal to the number of placed tiles divided by 2.
+The Score history shows you what score you got for each Flag you've claimed along the way.
+
+[b]When you press \"End Round\" you will get a score penalty.[/b] Try to use it sparingly!
 
               [img=80x80]res://images/intro.png[/img] ===> [img=120x120]res://images/next_flag.png[/img]
 
-To get a high score, you need to capture flags without placing a lot of tiles"
+To get a high score, you need to capture all 6 Flags without placing a lot of tiles, and without pressing End Round a lot."
 
 [node name="Tips" type="MarginContainer" parent="TabContainer"]
 visible = false
@@ -191,7 +207,7 @@ Reach the flag by placing the fewest tiles (this will get you a high score for t
   			[img=40x40]res://images/warning.png[/img]
 
 [ul]
-Be careful when pressing End Round. You will incur a penalty to your score for each time you end the round.
+Be careful when pressing End Round. You lose points for hitting End Round too many times. However you must press it to earn income and refill your hand when you can't afford to draw more tiles.
 [/ul]
 "
 
