@@ -10,6 +10,7 @@ var registered_farm_squares: Array[Dictionary] = []
 
 # FarmSquareLayer callback to render
 var farm_square_layer_render_fn = null
+var farm_square_layer_clear_fn = null
 
 const FARM_SQUARE_SIZE_SCORE_ARRAY: Array[int] = [2, 4, 8, 12]
 
@@ -23,12 +24,20 @@ func _process(delta: float) -> void:
 		$FarmSquareMode.text = "Active"
 	else:
 		$FarmSquareMode.text = "Inactive"
+
+func map_all_farm_square_cells(mapped_function):
 	# render the farm-square in the layer map
 	for fs in registered_farm_squares:
 		for cx in range(fs.min_x, fs.max_x + 1):
 			for cy in range(fs.min_y, fs.max_y + 1):
 				var cell = Vector2i(cx, cy)
-				farm_square_layer_render_fn.call(cell)
+				mapped_function.call(cell)
+
+func render_farm_squares():
+	map_all_farm_square_cells(farm_square_layer_render_fn)
+	
+func clear_farm_squares():
+	map_all_farm_square_cells(farm_square_layer_clear_fn)
 		
 func register_new_farm_square(bounding_box: Dictionary) -> bool:
 	for cx in range(bounding_box.min_x, bounding_box.max_x + 1):
@@ -37,6 +46,7 @@ func register_new_farm_square(bounding_box: Dictionary) -> bool:
 			if check_cell_in_registered_farm_squares(cell):
 				return false
 	registered_farm_squares.append(bounding_box)
+	render_farm_squares()
 	return true
 
 func check_cell_in_registered_farm_squares(cell: Vector2i):
@@ -88,3 +98,8 @@ func get_bonus_food_production() -> int:
 		var score_idx = fs.depth - 1
 		bonus_food += FARM_SQUARE_SIZE_SCORE_ARRAY[score_idx]
 	return bonus_food
+
+
+func _on_farm_square_reset_pressed() -> void:
+	clear_farm_squares()
+	registered_farm_squares.clear()

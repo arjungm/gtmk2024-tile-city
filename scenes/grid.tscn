@@ -49,6 +49,10 @@ layout_mode = 2
 toggle_mode = true
 text = "Toggle Farm Zones"
 
+[node name="FarmSquareReset" type="Button" parent="GridControlsBox/FarmSquareBox"]
+layout_mode = 2
+text = "Reset Farm Zones"
+
 [node name="FarmSquareMode" type="Label" parent="GridControlsBox/FarmSquareBox"]
 layout_mode = 2
 text = "Inactive"
@@ -84,3 +88,4 @@ collision_enabled = false
 [connection signal="pressed" from="GridControlsBox/Reset Button" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="GridControlsBox/HouseLineBox/HouseLineButton" to="GridControlsBox/HouseLineBox" method="_on_house_line_button_pressed"]
 [connection signal="toggled" from="GridControlsBox/FarmSquareBox/FarmSquareButton" to="GridControlsBox/FarmSquareBox" method="_on_farm_square_button_toggled"]
+[connection signal="pressed" from="GridControlsBox/FarmSquareBox/FarmSquareReset" to="GridControlsBox/FarmSquareBox" method="_on_farm_square_reset_pressed"]

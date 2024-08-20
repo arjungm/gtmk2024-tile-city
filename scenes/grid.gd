@@ -37,10 +37,15 @@ func _ready() -> void:
 	get_house_line_picking_mode_fn = $GridControlsBox/HouseLineBox.get_current_picking_mode
 	# Hook up farm square layer rendering
 	$GridControlsBox/FarmSquareBox.farm_square_layer_render_fn = render_farm_square_layer_on_cell
+	$GridControlsBox/FarmSquareBox.farm_square_layer_clear_fn = clear_farm_square_layer_on_cell
 	setup_grid(grid_size)
 
 func render_farm_square_layer_on_cell(cell: Vector2i):
 	$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+	
+func clear_farm_square_layer_on_cell(cell: Vector2i):
+	print(cell)
+	$Grids/FarmSquare.erase_cell(cell)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
