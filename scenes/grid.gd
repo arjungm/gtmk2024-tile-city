@@ -24,6 +24,7 @@ var get_farm_square_picking_active_fn = null
 var get_house_line_picking_mode_fn = null
 
 const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
+const HOUSE_SQUARE_ATLAS_IDX = Vector2i(18, 0)
 
 var goal_cell: Vector2i = Vector2i.ZERO
 
@@ -37,10 +38,14 @@ func _ready() -> void:
 	get_house_line_picking_mode_fn = $GridControlsBox/HouseLineBox.get_current_picking_mode
 	# Hook up farm square layer rendering
 	$GridControlsBox/FarmSquareBox.farm_square_layer_render_fn = render_farm_square_layer_on_cell
+	$GridControlsBox/HouseLineBox.house_line_layer_render_fn = render_house_line_on_cell
 	setup_grid(grid_size)
 
 func render_farm_square_layer_on_cell(cell: Vector2i):
 	$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+	
+func render_house_line_on_cell(cell: Vector2i):
+	$Grids/FarmSquare.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, HOUSE_SQUARE_ATLAS_IDX)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -57,6 +62,7 @@ func _process(delta: float) -> void:
 	
 	process_tile_placement()
 	process_farm_square_mode()
+	process_house_line_mode()
 	
 func process_tile_placement():
 	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
@@ -69,6 +75,51 @@ func process_tile_placement():
 	
 func process_district_placement():
 	pass
+	
+func process_house_line_mode():
+	var mouse_cell: Vector2i = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
+	var type = get_house_line_picking_mode_fn.call()
+	var cells = compute_longest_line(mouse_cell, type)
+	if cells.size() >= 3:
+		for cell in cells:
+			$Grids/PreviewLayer.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, HOUSE_SQUARE_ATLAS_IDX)
+	pass
+	
+func compute_longest_line(cell: Vector2i, type: HousePickingMode.Type) -> Array[Vector2i]:
+	var res: Array[Vector2i] = []
+	if !is_house_cell(cell):
+		return []
+	
+	res += [cell]
+	match type:
+		HousePickingMode.Type.VERTICAL:
+			res += compute_longest_house_ray(cell, Vector2i.UP) + \
+				compute_longest_house_ray(cell, Vector2i.DOWN)
+		HousePickingMode.Type.HORIZONTAL:
+			res += compute_longest_house_ray(cell, Vector2i.LEFT) + \
+				compute_longest_house_ray(cell, Vector2i.RIGHT)
+		HousePickingMode.Type.DIAGONAL:
+			var upRight = compute_longest_house_ray(cell, Vector2i.UP + Vector2i.RIGHT) + \
+				compute_longest_house_ray(cell, Vector2i.DOWN + Vector2i.LEFT)
+			var downRight = compute_longest_house_ray(cell, Vector2i.DOWN + Vector2i.RIGHT) + \
+				compute_longest_house_ray(cell, Vector2i.UP + Vector2i.LEFT)
+			res += upRight if upRight.size() > downRight.size() else downRight
+	
+	return res
+	
+func compute_longest_house_ray(cell: Vector2i, direction: Vector2i) -> Array[Vector2i]:
+	var new = cell + direction
+	var res: Array[Vector2i] = []
+	if !is_house_cell(new):
+		return res
+	
+	res += [new]
+	return res + compute_longest_house_ray(new, direction)
+	
+func is_house_cell(cell: Vector2i)-> bool:
+	if bounds.has_point(cell) and $Grids/Map.get_tile_type_in_cell(cell)==Tile.Type.HOUSE:
+		return true
+	return false
 
 func process_farm_square_mode():
 	if get_farm_square_picking_active_fn.call():
@@ -125,6 +176,7 @@ func _input(event):
 		try_confirm_tile_placement(clicked_cell)
 		try_confirm_district_placement(clicked_cell)
 		try_confirm_farm_square_marked()
+		try_confirm_house_line_marked(clicked_cell)
 
 
 func try_confirm_tile_placement(cell: Vector2i) -> bool:
@@ -152,6 +204,16 @@ func try_confirm_farm_square_marked():
 		return
 	$GridControlsBox/FarmSquareBox.register_new_farm_square(bounding_box)
 	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
+	
+func try_confirm_house_line_marked(clicked_cell: Vector2i):
+	var type = get_house_line_picking_mode_fn.call() 
+	if type == HousePickingMode.Type.INACTIVE:
+		return
+	var line = compute_longest_line(clicked_cell, type)
+	if line.size() < 3:
+		return
+	$GridControlsBox/HouseLineBox.register_new_house_line(line)
+	$GridControlsBox/HouseLineBox.reset_house_line_picking_mode()
 
 func handle_district_rotation():
 	if placement_district != null:
