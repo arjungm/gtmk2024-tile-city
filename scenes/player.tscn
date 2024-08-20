@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=25 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://l0f6cjcls0c" path="res://images/road.png" id="5_kwuiq"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
 [ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
+[ext_resource type="PackedScene" uid="uid://dbo6ismch44ng" path="res://scenes/texture_tile_list.tscn" id="12_gjsl3"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_kfchj"]
 device = -1
@@ -144,30 +145,39 @@ position = Vector2(37, 614)
 script = ExtResource("4_c5561")
 metadata/_edit_group_ = true
 
-[node name="VboxContainer" type="VBoxContainer" parent="DiscardZone"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DiscardZone"]
 custom_minimum_size = Vector2(120, 0)
 offset_right = 120.0
 offset_bottom = 180.0
 
-[node name="TitleDiscard" type="Label" parent="DiscardZone/VboxContainer"]
+[node name="TitleDiscard" type="Label" parent="DiscardZone/VBoxContainer"]
 layout_mode = 2
 text = "Discard"
 
-[node name="CenterContainer" type="CenterContainer" parent="DiscardZone/VboxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="DiscardZone/VBoxContainer"]
 custom_minimum_size = Vector2(120, 150)
 layout_mode = 2
 
-[node name="DiscardBG" type="ColorRect" parent="DiscardZone/VboxContainer/CenterContainer"]
+[node name="DiscardBG" type="ColorRect" parent="DiscardZone/VBoxContainer/CenterContainer"]
 custom_minimum_size = Vector2(120, 150)
 layout_mode = 2
 color = Color(0.486275, 0.117647, 0.247059, 1)
 
-[node name="DiscardItemList" type="ItemList" parent="DiscardZone/VboxContainer/CenterContainer"]
+[node name="DiscardItemList" type="ItemList" parent="DiscardZone/VBoxContainer/CenterContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 140)
 layout_mode = 2
 
+[node name="HFlowContainer" type="HFlowContainer" parent="DiscardZone/VBoxContainer/CenterContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(100, 130)
+layout_mode = 2
+
+[node name="TextureIconTextList" parent="DiscardZone/VBoxContainer/CenterContainer/HFlowContainer" instance=ExtResource("12_gjsl3")]
+layout_mode = 2
+
 [node name="TileBag" type="Node2D" parent="."]
-position = Vector2(187, 615)
+position = Vector2(188, 615)
 script = ExtResource("2_gcavq")
 metadata/_edit_group_ = true
 
@@ -190,7 +200,15 @@ layout_mode = 2
 color = Color(0, 0.247059, 0.529412, 1)
 
 [node name="BagItemList" type="ItemList" parent="TileBag/VBoxContainer/CenterContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 140)
+layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="TileBag/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(100, 130)
+layout_mode = 2
+
+[node name="TextureIconTextList" parent="TileBag/VBoxContainer/CenterContainer/HFlowContainer" instance=ExtResource("12_gjsl3")]
 layout_mode = 2
 
 [node name="HUD" type="Node2D" parent="."]

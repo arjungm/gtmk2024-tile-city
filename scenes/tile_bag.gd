@@ -49,7 +49,7 @@ func draw_tile() -> Tile.Type:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	print('tilebag')
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -57,8 +57,9 @@ func _process(delta: float) -> void:
 	pass
 
 func update_item_list():
-	$VBoxContainer/CenterContainer/BagItemList.clear()
-	for t in contained_tiles:
-		var c: int = contained_tiles[t]
-		var item_text = "x" + str(c) + " " + Tile.type_to_string(t)
-		$VBoxContainer/CenterContainer/BagItemList.add_item(item_text, get_texture_for_tile_fn.call(t))
+	$VBoxContainer/CenterContainer/HFlowContainer/TextureIconTextList.draw_textures(contained_tiles)
+	#$VBoxContainer/CenterContainer/BagItemList.clear()
+	#for t in contained_tiles:
+		#var c: int = contained_tiles[t]
+		#var item_text = "x" + str(c) + " " + Tile.type_to_string(t)
+		#$VBoxContainer/CenterContainer/BagItemList.add_item(item_text, Tile.load_texture_for_tile_type(t))

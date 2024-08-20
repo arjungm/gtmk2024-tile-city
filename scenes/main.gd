@@ -28,9 +28,7 @@ func _ready() -> void:
 	game_started.emit()
 
 func get_texture_for_tile_type(tile_type: Tile.Type):
-	var texture = tile_type_to_texture_map[tile_type].duplicate()
-	texture.set_size_override(Vector2i(20, 20))
-	return texture
+	return tile_type_to_texture_map[tile_type].duplicate()
 	
 func load_texture_for_tile_type(tile_type: Tile.Type):
 	var img_base_name = ""
@@ -43,8 +41,8 @@ func load_texture_for_tile_type(tile_type: Tile.Type):
 			img_base_name = "road"
 	var path = "res://images/" + img_base_name + ".png"
 	var image = Image.load_from_file(path)
+	image.resize(20,20)
 	var texture = ImageTexture.create_from_image(image)
-	texture.set_size_override(Vector2i(40, 40))
 	return texture
 
 func get_house_count() -> int:

@@ -27,3 +27,18 @@ static func string_to_type(string: String) -> Type:
 			return Type.FARM
 		_:
 			return Type.UNKNOWN
+
+static func load_texture_for_tile_type(tile_type: Tile.Type):
+	var img_base_name = ""
+	match tile_type:
+		Tile.Type.FARM:
+			img_base_name = "farm"
+		Tile.Type.HOUSE:
+			img_base_name = "house"
+		Tile.Type.ROAD:
+			img_base_name = "road"
+	var path = "res://images/" + img_base_name + ".png"
+	var image = Image.load_from_file(path)
+	image.resize(20,20)
+	var texture = ImageTexture.new().create_from_image(image)
+	return texture
