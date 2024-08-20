@@ -1,7 +1,7 @@
 extends Node2D
 
 var get_money_fn = null
-var get_population_fn = null
+var get_income_fn = null
 var get_food_fn = null
 
 func update_contents(text: String):
@@ -16,6 +16,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var contents_status: String = ""
 	contents_status += "Money: $" + str(get_money_fn.call()) +"\n"
-	contents_status += "Income: $" + str(get_population_fn.call()) + "\n"
+	contents_status += "Income: $" + str(get_income_fn.call()) + "\n"
 	contents_status += "Food: " + str(get_food_fn.call()) +"\n"
 	update_contents(contents_status)

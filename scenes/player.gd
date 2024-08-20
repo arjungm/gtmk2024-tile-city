@@ -17,12 +17,13 @@ var num_refills_used: int = 0
 @export var get_game_map_fn = null
 
 # Grid/Map query functions
+var fn_house_count = null
 var fn_score_grid = null
 
 func get_money():
 	return money
 
-func get_population():
+func get_income():
 	return fn_score_grid.call().income
 	
 func get_food():
@@ -34,7 +35,7 @@ func _ready() -> void:
 	for i in range($PlayerHand.get_maximum_hand_size()):
 		draw_gain_tile()
 	$HUD.get_money_fn = get_money
-	$HUD.get_population_fn = get_population
+	$HUD.get_income_fn = get_income
 	$HUD.get_food_fn = get_food
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -98,7 +99,7 @@ func _on_discard_button_pressed() -> void:
 
 func can_place_tile(tile_type: Tile.Type) -> bool:
 	if tile_type == Tile.Type.HOUSE:
-		return get_population() < get_food()
+		return fn_house_count.call() < get_food()
 	return true
 
 func _on_place_button_pressed() -> void:
@@ -130,8 +131,7 @@ func handle_tile_placement(tile_type: Tile.Type):
 
 
 func _on_end_round_button_pressed() -> void:
-	# TODO: compute the money gain from income
-	var gained = 10
+	var gained = get_income()
 	money += gained
 	round_tracker += 1
 	num_refills_used = 0
