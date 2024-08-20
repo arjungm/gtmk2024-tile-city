@@ -48,6 +48,13 @@ func load_texture_for_tile_type(tile_type: Tile.Type):
 func get_house_count() -> int:
 	return $Grid/Grids/Map.get_num_placed_tiles(Tile.Type.HOUSE)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func _on_player_game_end():
+	$GameOverBox.visible = true
+	$GameOverBox/VBoxContainer/Score.text = str("Final Score:\n", $Player.get_final_score_text())
+	get_tree().paused = true
+
+func _on_restart_pressed() -> void:
+	$GameOverBox.visible = false
+	get_tree().paused = false
+	$Grid.reset()
+	$Player.new_game_setup()

@@ -18,6 +18,10 @@ func refill_with(incoming_tiles: Dictionary) -> void:
 		contained_tiles[tile] += count
 	update_item_list()
 
+func clear_bag():
+	contained_tiles = {}
+	update_item_list()
+
 func get_tile_array() -> Array[Tile.Type]:
 	var tile_array: Array[Tile.Type] = []
 	var keys = contained_tiles.keys()

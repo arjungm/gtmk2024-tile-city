@@ -6,6 +6,10 @@ signal flag_score_changed(flag_score: int, end_round_penalty: int, grid_size: in
 
 signal flag_scoring_changed(potential_fs: int, potential_er_pen: int, grid_size: int)
 
+signal game_end
+# Hardcoded value -- size after 6 rounds is 26
+const GAME_END_SIZE = 25
+
 var starting_tiles = {
 	Tile.Type.HOUSE: 4,
 	Tile.Type.ROAD: 2,
@@ -31,6 +35,9 @@ var fn_house_count = null
 var fn_score_grid = null
 var fn_score_bonuses = null
 
+func get_final_score_text() -> String:
+	return str("Total Expansions: ", flag_count+1, "\nEnd Score: ", flag_score)
+
 func get_money():
 	return money
 
@@ -51,7 +58,9 @@ func _ready() -> void:
 	pass
 
 func new_game_setup():
+	$TileBag.clear_bag()
 	$TileBag.refill_with(starting_tiles)
+	$DiscardZone.clear()
 	for i in range($PlayerHand.get_maximum_hand_size()):
 		draw_gain_tile()
 	$HUD.get_money_fn = get_money
@@ -170,6 +179,8 @@ func _on_grid_flag_claimed(grid_size: int, used_tiles: int) -> void:
 	flag_score_changed.emit(flag_score, end_round_penalty, grid_size)
 	end_round_penalty = 0
 	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, grid_size)
+	if grid_size >= GAME_END_SIZE:
+		game_end.emit()
 
 
 func _on_grid_grid_size_changed(grid_size: int) -> void:

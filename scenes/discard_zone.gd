@@ -18,10 +18,9 @@ func update_item_list():
 		#var item_text = "x" + str(c) + " " + Tile.type_to_string(t)
 		#$VboxContainer/CenterContainer/DiscardItemList.add_item(item_text, get_texture_for_tile_fn.call(t))
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
+func clear():
+	discarded_tiles = {}
+	update_item_list()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

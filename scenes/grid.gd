@@ -293,3 +293,11 @@ func score_info_bonuses() -> Dictionary:
 	out.food_bonus = $GridControlsBox/FarmSquareBox.get_bonus_food_production()
 	out.income_bonus = $GridControlsBox/HouseLineBox.get_bonus_income()
 	return out
+
+func reset():
+	$GridControlsBox/FarmSquareBox.clear_farm_squares()
+	$GridControlsBox/HouseLineBox.clear_lines()
+	$Grids/BG.clear()
+	$Grids/Map.clear()
+	$Grids/FarmSquare.clear()
+	setup_grid(5)

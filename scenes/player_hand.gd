@@ -38,7 +38,6 @@ func gain_tile(tile: Tile.Type):
 	$HandListTiles.add_item(Tile.type_to_string(tile), get_texture_for_tile_fn.call(tile))
 
 func remove_tile(tile_idx: int, tile_type: Tile.Type):
-	print("removed ",tile_idx," ",tiles_in_hand[tile_idx])
 	tiles_in_hand.remove_at(tile_idx)
 	$HandListTiles.remove_item(tile_idx)
 
