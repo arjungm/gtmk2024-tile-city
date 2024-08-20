@@ -25,14 +25,17 @@ offset_right = 1408.0
 offset_bottom = 235.0
 
 [node name="District Button" type="Button" parent="GridControlsBox"]
+visible = false
 layout_mode = 2
 text = "Generate District"
 
 [node name="Expand Button" type="Button" parent="GridControlsBox"]
+visible = false
 layout_mode = 2
 text = "Expand by 3"
 
 [node name="Reset Button" type="Button" parent="GridControlsBox"]
+visible = false
 layout_mode = 2
 text = "Reset Size"
 
