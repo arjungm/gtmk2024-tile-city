@@ -21,9 +21,6 @@ const ATLAS_TEXTURE_LAYER_ID = 1
 var placement_tile: TileHandItem = null
 var placement_district: District = null
 
-# From Grid Parent
-var get_farm_square_picking_active_fn = null
-
 const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
 const HOUSE_SQUARE_ATLAS_IDX = Vector2i(18, 0)
 
@@ -35,7 +32,6 @@ func get_game_map():
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	get_farm_square_picking_active_fn = $GridControlsBox/FarmSquareBox.get_farm_square_picking_active
 	# Hook up farm square layer rendering
 	$GridControlsBox/FarmSquareBox.farm_square_layer_render_fn = render_farm_square_layer_on_cell
 	$GridControlsBox/FarmSquareBox.farm_square_layer_clear_fn = clear_farm_square_layer_on_cell
@@ -58,6 +54,7 @@ func clear_house_line_on_cell(cell: Vector2i):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	$Grids/PreviewLayer.clear()
+	process_tile_placement()
 	
 	if placement_district != null:
 		var origin_cell = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
@@ -68,8 +65,6 @@ func _process(delta: float) -> void:
 				var atlas_idx = placement_district.get_atlas_index() if placeable else ERROR_DIST_IDX
 				$Grids/PreviewLayer.set_cell(cell, 1, atlas_idx)
 	
-	process_tile_placement()
-	process_farm_square_mode()
 	
 func process_tile_placement():
 	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
@@ -134,47 +129,31 @@ func is_house_cell(cell: Vector2i) -> bool:
 func is_in_line(cell: Vector2i) -> bool:
 	return $GridControlsBox/HouseLineBox.is_cell_in_lines(cell)
 
-func process_farm_square_mode():
-	if get_farm_square_picking_active_fn.call():
-		var mouse_cell: Vector2i = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
-		if not is_farm_cell(mouse_cell):
-			$GridControlsBox/FarmSquareBox.clear_preview_farm_square()
-			return
-		var depth = compute_largest_square(mouse_cell)
-		var max_x = mouse_cell.x + depth
-		var max_y = mouse_cell.y + depth
-		var min_x = mouse_cell.x
-		var min_y = mouse_cell.y
-		# store the preview in the FarmSquareBox (for later registering)
-		if depth > 0:
-			$GridControlsBox/FarmSquareBox.register_preview_farm_square(min_x, min_y, depth)
-			# render the preview of the farm square
-			for x in range(min_x, max_x+1):
-				for y in range(min_y, max_y+1):
-					$Grids/PreviewLayer.set_cell(Vector2i(x,y), ATLAS_TEXTURE_LAYER_ID, FARM_SQUARE_ATLAS_IDX)
+func compute_largest_farm_square() -> Rect2i:
+	var squares: Array[Rect2i] = []
+	for i in range(bounds.position.x, bounds.end.x):
+		for j in range(bounds.position.y, bounds.end.y):
+			squares.append(largest_farm_square_at(Vector2i(i, j)))
+	
+	var largest = squares.reduce(func(max, rect): return rect if rect.get_area() > max.get_area() else max)
+	return largest if largest && largest.get_area() >= 4 else Rect2i()
+	
+func largest_farm_square_at(start_cell: Vector2i) -> Rect2i:
+	if not is_farm_cell(start_cell) || is_in_square(start_cell):
+		return Rect2i()
+	var curr_size = 1
+	while curr_size < bounds.size.x:
+		for x in range(start_cell.x, start_cell.x + curr_size):
+			for y in range(start_cell.y, start_cell.y + curr_size):
+				var cell = Vector2i(x, y)
+				if not is_farm_cell(cell) || is_in_square(cell):
+					return Rect2i(start_cell.x, start_cell.y, curr_size-1, curr_size-1)
+		curr_size += 1
+	
+	return Rect2i(0, 0, curr_size, curr_size)
 
-func compute_largest_square(start_cell: Vector2i) -> int:
-	# Dumbest implementation: starting from a given cell, it checks the neighbors at 1-distance.
-	# Then if all three are valid farm squares, then we know 2x2 exists. Repeat this for distance
-	# incrementing by 1 when it passes the farm-square check.
-	var ret_depth = 0
-	var max_depth = 1
-	var check_next_layer = true
-	while check_next_layer:
-		for x in range(start_cell.x, start_cell.x + max_depth + 1):
-			var check_cell = Vector2i(x, start_cell.y+max_depth)
-			if not is_farm_cell(check_cell):
-				check_next_layer = false
-		if not check_next_layer:
-			break
-		for y in range(start_cell.y, start_cell.y + max_depth + 1):
-			var check_cell = Vector2i(start_cell.x+max_depth, y)
-			if not is_farm_cell(check_cell):
-				check_next_layer = false
-		if check_next_layer:
-			ret_depth = max_depth
-			max_depth = max_depth + 1
-	return ret_depth
+func is_in_square(cell: Vector2i) -> bool:
+	return $GridControlsBox/FarmSquareBox.check_cell_in_registered_farm_squares(cell)
 
 func is_farm_cell(cell: Vector2i)-> bool:
 	if bounds.has_point(cell) and $Grids/Map.get_tile_type_in_cell(cell)==Tile.Type.FARM:
@@ -188,15 +167,29 @@ func _input(event):
 		var clicked_cell = $Grids/Map.local_to_map($Grids.get_local_mouse_position())
 		try_confirm_tile_placement(clicked_cell)
 		try_confirm_district_placement(clicked_cell)
-		try_confirm_farm_square_marked()
 
+func try_confirm_farm_square():
+	$GridControlsBox/FarmSquareBox.clear_farm_squares()
+	var square = compute_largest_farm_square()
+	var placed = try_place_square(square)
+	print(square, placed)
+	while placed:
+		print(square, placed)
+		square = compute_largest_farm_square()
+		placed = try_place_square(square)
+		
+func try_place_square(square: Rect2i) -> bool:
+	if square.get_area() < 4:
+		return false
+	return $GridControlsBox/FarmSquareBox.register_new_farm_square(square)
 
 func try_confirm_tile_placement(cell: Vector2i) -> bool:
 	if bounds.has_point(cell):
 		if placement_tile && $Grids/Map.can_place_tile_in_cell(cell, placement_tile.tile_type):
 			handle_tile_map_update(cell, placement_tile)
 			placement_tile = null
-			try_confirm_house_line_marked(cell)
+			try_confirm_house_line_marked()
+			try_confirm_farm_square()
 			return true
 	return false
 
@@ -207,18 +200,8 @@ func try_confirm_district_placement(cell: Vector2i) -> bool:
 			placement_district = null
 			return true
 	return false
-
-func try_confirm_farm_square_marked():
-	# fetch the bounds for the farm from the preview layer
-	if not get_farm_square_picking_active_fn.call():
-		return
-	var bounding_box = $GridControlsBox/FarmSquareBox.get_preview_farm_square_bounds()
-	if bounding_box.depth < 1:
-		return
-	$GridControlsBox/FarmSquareBox.register_new_farm_square(bounding_box)
-	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
 	
-func try_confirm_house_line_marked(clicked_cell: Vector2i):
+func try_confirm_house_line_marked():
 	$GridControlsBox/HouseLineBox.clear_lines()
 	var line = compute_longest_overall()
 	var placed = try_place_line(line)
@@ -275,7 +258,6 @@ func setup_grid(size: int):
 	bounds = Rect2i(0, 0, grid_size, grid_size)
 	$Grids/BG.set_grid_bounds(bounds)
 	
-	
 	var pos = randi() % size
 	# Swaps which side the goal on is each expansion
 	goal_cell = Vector2i(pos, size - 1) if goal_cell.y <= goal_cell.x else Vector2i(size - 1, pos)
@@ -286,7 +268,6 @@ func setup_grid(size: int):
 	pass
 
 
-	
 func score_grid() -> Score:
 	# Score food
 	var food = $Grids/Map.get_num_placed_tiles(Tile.Type.FARM) + \
