@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0fqv4flxexal"]
+[gd_scene load_steps=7 format=3 uid="uid://b0fqv4flxexal"]
 
 [ext_resource type="PackedScene" uid="uid://2elikixd2mpj" path="res://scenes/player.tscn" id="1_cmtdo"]
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_dj865"]
 [ext_resource type="PackedScene" uid="uid://dl7yjxvv30uv5" path="res://scenes/grid.tscn" id="2_o0rg1"]
+[ext_resource type="Script" path="res://scenes/previous_flag_scores.gd" id="4_5psvh"]
+[ext_resource type="Script" path="res://scenes/current_flag_score.gd" id="5_cqnt2"]
+[ext_resource type="Script" path="res://scenes/end_round_penalty.gd" id="6_vjwss"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_dj865")
@@ -25,10 +28,9 @@ offset_left = 1397.0
 offset_top = 451.0
 offset_right = 1886.0
 offset_bottom = 1022.0
-current_tab = 4
+current_tab = 0
 
 [node name="Intro" type="RichTextLabel" parent="TabContainer"]
-visible = false
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=200x200]res://images/intro.png[/img]
@@ -94,6 +96,7 @@ Additionally Roads can help you reach those pesky flags!"
 metadata/_tab_index = 3
 
 [node name="Scoring" type="RichTextLabel" parent="TabContainer"]
+visible = false
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/flag_tile.png[/img]
@@ -144,5 +147,35 @@ Be careful when pressing End Round. You will incur a penalty to your score for e
 "
 metadata/_tab_index = 5
 
+[node name="FlagScoreContainer" type="VBoxContainer" parent="."]
+offset_left = 1398.0
+offset_top = 143.0
+offset_right = 1619.0
+offset_bottom = 411.0
+metadata/_edit_group_ = true
+
+[node name="PreviousFlagScores" type="RichTextLabel" parent="FlagScoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "                                              "
+script = ExtResource("4_5psvh")
+
+[node name="CurrentFlagScore" type="Label" parent="FlagScoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Next Flag Score: 0"
+script = ExtResource("5_cqnt2")
+
+[node name="EndRoundPenalty" type="Label" parent="FlagScoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Current Penalty: 0"
+script = ExtResource("6_vjwss")
+
+[connection signal="flag_score_changed" from="Player" to="FlagScoreContainer/PreviousFlagScores" method="_on_player_flag_score_changed"]
+[connection signal="flag_scoring_changed" from="Player" to="FlagScoreContainer/CurrentFlagScore" method="_on_player_flag_scoring_changed"]
+[connection signal="flag_scoring_changed" from="Player" to="FlagScoreContainer/EndRoundPenalty" method="_on_player_flag_scoring_changed"]
 [connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]
+[connection signal="flag_claimed" from="Grid" to="Player" method="_on_grid_flag_claimed"]
 [connection signal="tile_placed" from="Grid" to="Player" method="_on_grid_tile_placed"]

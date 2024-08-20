@@ -7,6 +7,7 @@ const Score = preload("res://data_types/score.gd")
 enum HouseLineDirection { VERTICAL, HORIZONTAL, DIAGONAL }
 
 signal tile_placed(tile_idx: int, tile_type: Tile.Type)
+signal flag_claimed(grid_size: int, used_tiles: int)
 
 @export var grid_size = 5
 var bounds: Rect2i
@@ -29,9 +30,15 @@ const HOUSE_SQUARE_ATLAS_IDX = Vector2i(18, 0)
 
 var goal_cell: Vector2i = Vector2i.ZERO
 
-func get_game_map():
-	for coords in $Grids/Map.get_used_cells():
-		print(coords, " ", $Grids/Map.get_tile_type_in_cell(coords))
+
+func get_num_used_cells() -> int:
+	var used = $Grids/Map.get_used_cells()
+	return used.size()-1
+
+func get_potential_flag_score() -> int:
+	var total = grid_size*grid_size
+	var used = $Grids/Map.get_used_cells()
+	return (total-used.size())
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -242,6 +249,8 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 	$Grids/Map.set_tile_type_in_cell(target_cell, tile_type)
 	tile_placed.emit(tile_idx, tile_type)
 	if target_cell == goal_cell:
+		var used_cells = $Grids/Map.get_used_cells()
+		flag_claimed.emit(grid_size, used_cells.size())
 		setup_grid(grid_size + 3)
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
