@@ -8,7 +8,11 @@ var starting_tiles = {
 	Tile.Type.FARM: 6
 }
 
-@export var money: int = 0
+@export var money: int = 10
+@export var round_tracker: int = 1
+
+const base_refill_cost: int = 3
+var num_refills_used: int = 0
 
 @export var get_game_map_fn = null
 
@@ -35,12 +39,42 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	$ControlButtons/RefillButton.display_cost = get_current_refill_cost()
+	$ControlButtons/RefillButton.disabled = not (can_afford_refill() and can_refill_hand())
+	$ControlButtons/PlaceButton.disabled = ($PlayerHand.get_tile_count() == 0)
+	
+func can_afford_refill():
+	return money >= get_current_refill_cost()
+	
+func get_current_refill_cost():
+	return base_refill_cost + (num_refills_used * (num_refills_used+1)/2)
+	
+func can_refill_hand():
+	return $PlayerHand.get_tile_count() < $PlayerHand.maximum_hand_size
 
 func _on_refill_button_pressed() -> void:
-	var num_remaining_tiles = $PlayerHand.get_maximum_hand_size() - $PlayerHand.get_tile_count()
-	for i in range(num_remaining_tiles):
+	if not can_afford_refill():
+		return
+	# money updates
+	money -= get_current_refill_cost()
+	num_refills_used += 1
+	refill_hand_from_bag()
+	
+func refill_hand_from_bag():
+	var num_desired_tiles = $PlayerHand.get_maximum_hand_size() - $PlayerHand.get_tile_count()
+	var num_bag_tiles = $TileBag.get_num_tiles_in_bag()
+	var num_to_draw = min(num_bag_tiles, num_desired_tiles)
+	
+	for i in range(num_to_draw):
 		draw_gain_tile()
+	
+	if num_bag_tiles < num_desired_tiles:
+		# refill and redraw
+		$TileBag.refill_with($DiscardZone.discarded_tiles)
+		$DiscardZone.discarded_tiles.clear()
+		num_to_draw = num_desired_tiles - num_to_draw
+		for i in range(num_to_draw):
+			draw_gain_tile()
 
 func draw_gain_tile():
 	var drawn_tile = $TileBag.get_random_tile()
@@ -90,7 +124,8 @@ func handle_tile_placement(tile_type: Tile.Type):
 
 
 func _on_end_round_button_pressed() -> void:
-	update_tile_simulation() # Replace with function body.
-
-func update_tile_simulation():
-	get_game_map_fn.call()
+	# TODO: compute the money gain from income
+	money += 10
+	round_tracker += 1
+	num_refills_used = 0
+	refill_hand_from_bag()

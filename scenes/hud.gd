@@ -15,7 +15,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var contents_status: String = ""
-	contents_status += "Money: " + str(get_money_fn.call()) +"\n"
-	contents_status += "Population: " + str(get_population_fn.call()) + "\n"
+	contents_status += "Money: $" + str(get_money_fn.call()) +"\n"
+	contents_status += "Income: $" + str(get_population_fn.call()) + "\n"
 	contents_status += "Food: " + str(get_food_fn.call()) +"\n"
 	update_contents(contents_status)

@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=9 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
+[ext_resource type="Script" path="res://scenes/refill_button.gd" id="3_3b8ix"]
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
@@ -52,6 +53,7 @@ text = "place tiles"
 [node name="RefillButton" type="Button" parent="ControlButtons"]
 layout_mode = 2
 text = "refill tiles"
+script = ExtResource("3_3b8ix")
 
 [node name="EndRoundButton" type="Button" parent="ControlButtons"]
 layout_mode = 2

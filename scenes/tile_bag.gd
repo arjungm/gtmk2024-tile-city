@@ -2,6 +2,12 @@ extends Node2D
 
 var contained_tiles = {}
 
+func get_num_tiles_in_bag():
+	var sum = 0
+	for t in contained_tiles:
+		sum += contained_tiles[t]
+	return sum
+
 func refill_with(incoming_tiles: Dictionary) -> void:
 	for tile in incoming_tiles:
 		var count = incoming_tiles[tile]
