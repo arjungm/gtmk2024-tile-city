@@ -1,4 +1,4 @@
-extends Label
+extends RichTextLabel
 
 var potential_flag_score: int = 0
 

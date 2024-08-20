@@ -8,6 +8,7 @@ enum HouseLineDirection { VERTICAL, HORIZONTAL, DIAGONAL }
 
 signal tile_placed(tile_idx: int, tile_type: Tile.Type)
 signal flag_claimed(grid_size: int, used_tiles: int)
+signal grid_size_changed(grid_size: int)
 
 @export var grid_size = 5
 var bounds: Rect2i
@@ -232,9 +233,9 @@ func handle_tile_map_update(target_cell: Vector2i, tile_hand_item: TileHandItem)
 	$Grids/Map.set_tile_type_in_cell(target_cell, tile_type)
 	tile_placed.emit(tile_idx, tile_type)
 	if target_cell == goal_cell:
-		var used_cells = $Grids/Map.get_used_cells()
-		flag_claimed.emit(grid_size, used_cells.size())
+		flag_claimed.emit(grid_size, get_num_used_cells())
 		setup_grid(grid_size + 3)
+		grid_size_changed.emit(grid_size)
 
 func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)

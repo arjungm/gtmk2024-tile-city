@@ -19,6 +19,7 @@ offset_bottom = 1024.0
 color = Color(0.317647, 0.156863, 0.14902, 1)
 
 [node name="GridControlsBox" type="VBoxContainer" parent="."]
+visible = false
 offset_left = 1040.0
 offset_top = 64.0
 offset_right = 1408.0
@@ -40,6 +41,7 @@ layout_mode = 2
 text = "Reset Size"
 
 [node name="HouseLineBox" type="HBoxContainer" parent="GridControlsBox"]
+visible = false
 layout_mode = 2
 script = ExtResource("3_m6dip")
 
@@ -59,22 +61,20 @@ layout_mode = 2
 text = "Inactive"
 
 [node name="FarmSquareBox" type="HBoxContainer" parent="GridControlsBox"]
+visible = false
 layout_mode = 2
 script = ExtResource("4_rc6g4")
 
 [node name="FarmSquareButton" type="Button" parent="GridControlsBox/FarmSquareBox"]
-visible = false
 layout_mode = 2
 toggle_mode = true
 text = "Toggle Farm Zones"
 
 [node name="FarmSquareReset" type="Button" parent="GridControlsBox/FarmSquareBox"]
-visible = false
 layout_mode = 2
 text = "Reset Farm Zones"
 
 [node name="FarmSquareMode" type="Label" parent="GridControlsBox/FarmSquareBox"]
-visible = false
 layout_mode = 2
 text = "Inactive"
 

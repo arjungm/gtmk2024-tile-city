@@ -2,7 +2,7 @@ extends Node2D
 
 signal start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type)
 
-signal flag_score_changed(flag_score: int, flag_count: int)
+signal flag_score_changed(flag_score: int, end_round_penalty: int)
 
 signal flag_scoring_changed(potential_fs: int, potential_er_pen: int)
 
@@ -153,6 +153,10 @@ func _on_end_round_button_pressed() -> void:
 
 func _on_grid_flag_claimed(grid_size: int, used_tiles: int) -> void:
 	flag_score = (grid_size*grid_size) - used_tiles - end_round_penalty
-	flag_count += 1
-	flag_score_changed.emit(flag_score, flag_count)
+	flag_score_changed.emit(flag_score, end_round_penalty)
 	end_round_penalty = 0
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+
+
+func _on_grid_grid_size_changed(grid_size: int) -> void:
+	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)

@@ -141,7 +141,7 @@ offset_bottom = 107.0
 
 [node name="HUDTitle" type="Label" parent="HUD/VBoxContainer"]
 layout_mode = 2
-text = "Score"
+text = "Stats"
 
 [node name="HUDContents" type="Label" parent="HUD/VBoxContainer"]
 layout_mode = 2

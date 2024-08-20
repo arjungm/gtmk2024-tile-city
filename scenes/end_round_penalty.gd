@@ -1,4 +1,4 @@
-extends Label
+extends RichTextLabel
 
 var potential_end_round_penalty: int = 0
 

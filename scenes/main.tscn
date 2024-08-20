@@ -25,12 +25,20 @@ position = Vector2(342, 0)
 
 [node name="TabContainer" type="TabContainer" parent="."]
 offset_left = 1397.0
-offset_top = 451.0
+offset_top = 361.0
 offset_right = 1886.0
 offset_bottom = 1022.0
 current_tab = 0
 
-[node name="Intro" type="RichTextLabel" parent="TabContainer"]
+[node name="Intro" type="MarginContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 0
+
+[node name="Intro" type="RichTextLabel" parent="TabContainer/Intro"]
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=200x200]res://images/intro.png[/img]
@@ -42,10 +50,17 @@ The goal is to build the largest city with the fewest number of tiles.
 You build your city by placing tiles from your hand. You start in the top left corner, and every tile must be adjacent to another existing tile.
 
 You can get more tiles to place by either spending money on \"Refills\" or Ending the Round."
-metadata/_tab_index = 0
 
-[node name="Farms" type="RichTextLabel" parent="TabContainer"]
+[node name="Farms" type="MarginContainer" parent="TabContainer"]
 visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 1
+
+[node name="Farms" type="RichTextLabel" parent="TabContainer/Farms"]
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/farm.png[/img]
@@ -59,10 +74,17 @@ However if you build Farms in a Square then you get BONUS Food.
 [img=160x160]res://images/farmsquare2.png[/img]  ===> [img=160x160]res://images/farmsquare3.png[/img]
 
 "
-metadata/_tab_index = 1
 
-[node name="Houses" type="RichTextLabel" parent="TabContainer"]
+[node name="Houses" type="MarginContainer" parent="TabContainer"]
 visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 2
+
+[node name="Houses" type="RichTextLabel" parent="TabContainer/Houses"]
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/house.png[/img]
@@ -78,10 +100,17 @@ Population earns you money which you can spend on refilling your hand.
 [img=180x60]res://images/houseline.png[/img]  ===> [img=180x60]res://images/houseline2.png[/img]
 
 When you build Houses in a line, either horizontal vertical or diagonal, then you get BONUS Income. This is because you are designing aesthetic neighborhoods!"
-metadata/_tab_index = 2
 
-[node name="Roads" type="RichTextLabel" parent="TabContainer"]
+[node name="Roads" type="MarginContainer" parent="TabContainer"]
 visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 3
+
+[node name="Roads" type="RichTextLabel" parent="TabContainer/Roads"]
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/road.png[/img]
@@ -93,10 +122,17 @@ They do not benefit you in terms of Food or Income. However when you place a Roa
 Roads help you cycle through your Bag faster, and can be thought of as discounted refills.
 
 Additionally Roads can help you reach those pesky flags!"
-metadata/_tab_index = 3
 
-[node name="Scoring" type="RichTextLabel" parent="TabContainer"]
+[node name="Scoring" type="MarginContainer" parent="TabContainer"]
 visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 4
+
+[node name="Scoring" type="RichTextLabel" parent="TabContainer/Scoring"]
 layout_mode = 2
 bbcode_enabled = true
 text = "              [img=80x80]res://images/flag_tile.png[/img]
@@ -112,10 +148,17 @@ When you press \"End Round\" you will get a score penalty. The penalty is equal 
               [img=80x80]res://images/intro.png[/img] ===> [img=120x120]res://images/next_flag.png[/img]
 
 To get a high score, you need to capture flags without placing a lot of tiles"
-metadata/_tab_index = 4
 
-[node name="Tips" type="RichTextLabel" parent="TabContainer"]
+[node name="Tips" type="MarginContainer" parent="TabContainer"]
 visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+metadata/_tab_index = 5
+
+[node name="Tips" type="RichTextLabel" parent="TabContainer/Tips"]
 layout_mode = 2
 bbcode_enabled = true
 text = "
@@ -145,37 +188,52 @@ Reach the flag by placing the fewest tiles (this will get you a high score for t
 Be careful when pressing End Round. You will incur a penalty to your score for each time you end the round.
 [/ul]
 "
-metadata/_tab_index = 5
 
-[node name="FlagScoreContainer" type="VBoxContainer" parent="."]
-offset_left = 1398.0
-offset_top = 143.0
-offset_right = 1619.0
-offset_bottom = 411.0
+[node name="CenterContainer" type="CenterContainer" parent="."]
+offset_left = 1396.0
+offset_top = 64.0
+offset_right = 1776.0
+offset_bottom = 344.0
 metadata/_edit_group_ = true
 
-[node name="PreviousFlagScores" type="RichTextLabel" parent="FlagScoreContainer"]
+[node name="ColorRect" type="ColorRect" parent="CenterContainer"]
+custom_minimum_size = Vector2(380, 270)
+layout_mode = 2
+color = Color(0.439216, 0.356863, 0.0392157, 1)
+
+[node name="FlagScoreContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(350, 260)
+layout_mode = 2
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="CenterContainer/FlagScoreContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 23
+text = "Scoring History"
+
+[node name="PreviousFlagScores" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 6.0
 bbcode_enabled = true
-text = "                                              "
 script = ExtResource("4_5psvh")
 
-[node name="CurrentFlagScore" type="Label" parent="FlagScoreContainer"]
+[node name="CurrentFlagScore" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Next Flag Score: 0"
 script = ExtResource("5_cqnt2")
 
-[node name="EndRoundPenalty" type="Label" parent="FlagScoreContainer"]
+[node name="EndRoundPenalty" type="RichTextLabel" parent="CenterContainer/FlagScoreContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Current Penalty: 0"
 script = ExtResource("6_vjwss")
 
-[connection signal="flag_score_changed" from="Player" to="FlagScoreContainer/PreviousFlagScores" method="_on_player_flag_score_changed"]
-[connection signal="flag_scoring_changed" from="Player" to="FlagScoreContainer/CurrentFlagScore" method="_on_player_flag_scoring_changed"]
-[connection signal="flag_scoring_changed" from="Player" to="FlagScoreContainer/EndRoundPenalty" method="_on_player_flag_scoring_changed"]
+[connection signal="flag_score_changed" from="Player" to="CenterContainer/FlagScoreContainer/PreviousFlagScores" method="_on_player_flag_score_changed"]
+[connection signal="flag_scoring_changed" from="Player" to="CenterContainer/FlagScoreContainer/CurrentFlagScore" method="_on_player_flag_scoring_changed"]
+[connection signal="flag_scoring_changed" from="Player" to="CenterContainer/FlagScoreContainer/EndRoundPenalty" method="_on_player_flag_scoring_changed"]
 [connection signal="start_place_mode" from="Player" to="Grid" method="_on_start_place_mode"]
 [connection signal="flag_claimed" from="Grid" to="Player" method="_on_grid_flag_claimed"]
+[connection signal="grid_size_changed" from="Grid" to="Player" method="_on_grid_grid_size_changed"]
 [connection signal="tile_placed" from="Grid" to="Player" method="_on_grid_tile_placed"]
