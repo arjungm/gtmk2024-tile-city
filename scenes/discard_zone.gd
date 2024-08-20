@@ -14,7 +14,8 @@ func update_item_list():
 	$VboxContainer/CenterContainer/DiscardItemList.clear()
 	for t in discarded_tiles:
 		var c: int = discarded_tiles[t]
-		$VboxContainer/CenterContainer/DiscardItemList.add_item(str(c), get_texture_for_tile_fn.call(t))
+		var item_text = "x" + str(c) + " " + Tile.type_to_string(t)
+		$VboxContainer/CenterContainer/DiscardItemList.add_item(item_text, get_texture_for_tile_fn.call(t))
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -60,4 +60,5 @@ func update_item_list():
 	$VBoxContainer/CenterContainer/BagItemList.clear()
 	for t in contained_tiles:
 		var c: int = contained_tiles[t]
-		$VBoxContainer/CenterContainer/BagItemList.add_item(str(c), get_texture_for_tile_fn.call(t))
+		var item_text = "x" + str(c) + " " + Tile.type_to_string(t)
+		$VBoxContainer/CenterContainer/BagItemList.add_item(item_text, get_texture_for_tile_fn.call(t))

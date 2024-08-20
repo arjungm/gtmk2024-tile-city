@@ -28,7 +28,9 @@ func _ready() -> void:
 	game_started.emit()
 
 func get_texture_for_tile_type(tile_type: Tile.Type):
-	return tile_type_to_texture_map[tile_type]
+	var texture = tile_type_to_texture_map[tile_type].duplicate()
+	texture.set_size_override(Vector2i(20, 20))
+	return texture
 	
 func load_texture_for_tile_type(tile_type: Tile.Type):
 	var img_base_name = ""
