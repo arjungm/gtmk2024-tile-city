@@ -4,6 +4,8 @@ const TileHandItem = preload("res://data_types/tile_hand_item.gd")
 const District = preload("res://data_types/district.gd")
 const Score = preload("res://data_types/score.gd")
 
+enum HouseLineDirection { VERTICAL, HORIZONTAL, DIAGONAL }
+
 signal tile_placed(tile_idx: int, tile_type: Tile.Type)
 
 @export var grid_size = 5
@@ -21,7 +23,6 @@ var placement_district: District = null
 
 # From Grid Parent
 var get_farm_square_picking_active_fn = null
-var get_house_line_picking_mode_fn = null
 
 const FARM_SQUARE_ATLAS_IDX = Vector2i(9,2)
 const HOUSE_SQUARE_ATLAS_IDX = Vector2i(18, 0)
@@ -35,7 +36,6 @@ func get_game_map():
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	get_farm_square_picking_active_fn = $GridControlsBox/FarmSquareBox.get_farm_square_picking_active
-	get_house_line_picking_mode_fn = $GridControlsBox/HouseLineBox.get_current_picking_mode
 	# Hook up farm square layer rendering
 	$GridControlsBox/FarmSquareBox.farm_square_layer_render_fn = render_farm_square_layer_on_cell
 	$GridControlsBox/FarmSquareBox.farm_square_layer_clear_fn = clear_farm_square_layer_on_cell
@@ -70,7 +70,6 @@ func _process(delta: float) -> void:
 	
 	process_tile_placement()
 	process_farm_square_mode()
-	process_house_line_mode()
 	
 func process_tile_placement():
 	if placement_tile and placement_tile.tile_type != Tile.Type.UNKNOWN:
@@ -83,30 +82,33 @@ func process_tile_placement():
 	
 func process_district_placement():
 	pass
+
+func compute_longest_overall() -> Array[Vector2i]:
+	var lines: Array = []
+	for i in range(bounds.position.x, bounds.end.x):
+		for j in range(bounds.position.y, bounds.end.y):
+			var cell = Vector2i(i, j)
+			lines.append(compute_longest_line(cell, HouseLineDirection.HORIZONTAL))
+			lines.append(compute_longest_line(cell, HouseLineDirection.VERTICAL))
+			lines.append(compute_longest_line(cell, HouseLineDirection.DIAGONAL))
 	
-func process_house_line_mode():
-	var mouse_cell: Vector2i = $Grids/PreviewLayer.local_to_map($Grids.get_local_mouse_position())
-	var type = get_house_line_picking_mode_fn.call()
-	var cells = compute_longest_line(mouse_cell, type)
-	if cells.size() >= 3:
-		for cell in cells:
-			$Grids/PreviewLayer.set_cell(cell, ATLAS_TEXTURE_LAYER_ID, HOUSE_SQUARE_ATLAS_IDX)
-	pass
-	
-func compute_longest_line(cell: Vector2i, type: HousePickingMode.Type) -> Array[Vector2i]:
+	var longest = lines.reduce(func(max, line): return line if line.size() > max.size() else max)
+	return longest if longest && longest.size() > 2 else ([] as Array[Vector2i])
+
+func compute_longest_line(cell: Vector2i, type: HouseLineDirection) -> Array[Vector2i]:
 	var res: Array[Vector2i] = []
-	if !is_house_cell(cell):
-		return []
+	if !is_house_cell(cell) || is_in_line(cell):
+		return res
 	
 	res += [cell]
 	match type:
-		HousePickingMode.Type.VERTICAL:
+		HouseLineDirection.VERTICAL:
 			res += compute_longest_house_ray(cell, Vector2i.UP) + \
 				compute_longest_house_ray(cell, Vector2i.DOWN)
-		HousePickingMode.Type.HORIZONTAL:
+		HouseLineDirection.HORIZONTAL:
 			res += compute_longest_house_ray(cell, Vector2i.LEFT) + \
 				compute_longest_house_ray(cell, Vector2i.RIGHT)
-		HousePickingMode.Type.DIAGONAL:
+		HouseLineDirection.DIAGONAL:
 			var upRight = compute_longest_house_ray(cell, Vector2i.UP + Vector2i.RIGHT) + \
 				compute_longest_house_ray(cell, Vector2i.DOWN + Vector2i.LEFT)
 			var downRight = compute_longest_house_ray(cell, Vector2i.DOWN + Vector2i.RIGHT) + \
@@ -118,16 +120,19 @@ func compute_longest_line(cell: Vector2i, type: HousePickingMode.Type) -> Array[
 func compute_longest_house_ray(cell: Vector2i, direction: Vector2i) -> Array[Vector2i]:
 	var new = cell + direction
 	var res: Array[Vector2i] = []
-	if !is_house_cell(new):
+	if !is_house_cell(new) || is_in_line(new):
 		return res
 	
 	res += [new]
 	return res + compute_longest_house_ray(new, direction)
 	
-func is_house_cell(cell: Vector2i)-> bool:
+func is_house_cell(cell: Vector2i) -> bool:
 	if bounds.has_point(cell) and $Grids/Map.get_tile_type_in_cell(cell)==Tile.Type.HOUSE:
 		return true
 	return false
+
+func is_in_line(cell: Vector2i) -> bool:
+	return $GridControlsBox/HouseLineBox.is_cell_in_lines(cell)
 
 func process_farm_square_mode():
 	if get_farm_square_picking_active_fn.call():
@@ -184,7 +189,6 @@ func _input(event):
 		try_confirm_tile_placement(clicked_cell)
 		try_confirm_district_placement(clicked_cell)
 		try_confirm_farm_square_marked()
-		try_confirm_house_line_marked(clicked_cell)
 
 
 func try_confirm_tile_placement(cell: Vector2i) -> bool:
@@ -192,6 +196,7 @@ func try_confirm_tile_placement(cell: Vector2i) -> bool:
 		if placement_tile && $Grids/Map.can_place_tile_in_cell(cell, placement_tile.tile_type):
 			handle_tile_map_update(cell, placement_tile)
 			placement_tile = null
+			try_confirm_house_line_marked(cell)
 			return true
 	return false
 
@@ -214,14 +219,17 @@ func try_confirm_farm_square_marked():
 	$GridControlsBox/FarmSquareBox.reset_farm_square_picking_mode()
 	
 func try_confirm_house_line_marked(clicked_cell: Vector2i):
-	var type = get_house_line_picking_mode_fn.call() 
-	if type == HousePickingMode.Type.INACTIVE:
-		return
-	var line = compute_longest_line(clicked_cell, type)
+	$GridControlsBox/HouseLineBox.clear_lines()
+	var line = compute_longest_overall()
+	var placed = try_place_line(line)
+	while placed:
+		line = compute_longest_overall()
+		placed = try_place_line(line)
+		
+func try_place_line(line: Array[Vector2i]) -> bool:
 	if line.size() < 3:
-		return
-	$GridControlsBox/HouseLineBox.register_new_house_line(line)
-	$GridControlsBox/HouseLineBox.reset_house_line_picking_mode()
+		return false
+	return $GridControlsBox/HouseLineBox.register_new_house_line(line)
 
 func handle_district_rotation():
 	if placement_district != null:
@@ -240,20 +248,9 @@ func set_tile_texture_in_cell(target_cell: Vector2i, tile_type: Tile.Type):
 	var tile_texture = tile_type_to_atlas_index(tile_type)
 	$Grids/Map.set_cell(target_cell, ATLAS_TEXTURE_LAYER_ID, tile_texture)
 
-func _on_button_pressed() -> void:
-	var shape: Array[Vector2i]
-	match randi() % 3:
-		0:
-			shape = [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)]
-		1, 2:
-			shape = [Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 0)]
-	var type: District.Type = District.Type.values().pick_random()
-	placement_district = District.new(shape, type)
-
 func _on_start_place_mode(tile_idx: int, tile_text: String, tile_type: Tile.Type) -> void:
 	placement_tile = TileHandItem.new(tile_idx, tile_type)
 	placement_district = null
-
 
 func tile_type_to_atlas_index(tile: Tile.Type) -> Vector2i:
 	match tile:
@@ -289,12 +286,6 @@ func setup_grid(size: int):
 	pass
 
 
-func _on_expand_button_pressed() -> void:
-	setup_grid(grid_size + 3)
-
-
-func _on_reset_button_pressed() -> void:
-	setup_grid(5)
 	
 func score_grid() -> Score:
 	# Score food

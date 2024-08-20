@@ -44,14 +44,17 @@ layout_mode = 2
 script = ExtResource("3_m6dip")
 
 [node name="HouseLineButton" type="Button" parent="GridControlsBox/HouseLineBox"]
+visible = false
 layout_mode = 2
 text = "Toggle House Zones"
 
 [node name="HouseLineReset" type="Button" parent="GridControlsBox/HouseLineBox"]
+visible = false
 layout_mode = 2
 text = "Reset House Zones"
 
 [node name="HouseLineMode" type="Label" parent="GridControlsBox/HouseLineBox"]
+visible = false
 layout_mode = 2
 text = "Inactive"
 
