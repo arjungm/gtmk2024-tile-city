@@ -4,32 +4,41 @@ var maximum_hand_size = 5
 
 var tiles_in_hand: Array[Tile.Type] = []
 
+var get_texture_for_tile_fn = null
+
 func get_maximum_hand_size():
 	return maximum_hand_size
 
 func get_tile_count():
 	return $HandListTiles.get_item_count()
 
-func get_texture_for_tile_type(tile_type: Tile.Type):
-	var img_base_name = ""
-	match tile_type:
-		Tile.Type.FARM:
-			img_base_name = "farm"
-		Tile.Type.HOUSE:
-			img_base_name = "house"
-		Tile.Type.ROAD:
-			img_base_name = "road"
-	var path = "res://images/" + img_base_name + ".png"
-	var image = Image.load_from_file(path)
-	var texture = ImageTexture.create_from_image(image)
-	texture.set_size_override(Vector2i(40, 40))
-	return texture
+func contains_tile_type(ttype: Tile.Type) -> bool:
+	for t in tiles_in_hand:
+		if ttype == t:
+			return true
+	return false
+
+func get_tile_from_hand(ttype: Tile.Type) -> Dictionary:
+	var out = {}
+	for i in range(tiles_in_hand.size()):
+		if tiles_in_hand[i] == ttype:
+			out.tile_idx = i
+			out.tile_text = Tile.type_to_string(ttype)
+			out.tile_type = ttype
+			return out
+	return out
+
+func remove_tile_type(ttype: Tile.Type):
+	for i in range(tiles_in_hand.size()):
+		if tiles_in_hand[i] == ttype:
+			tiles_in_hand.remove_at(i)
 
 func gain_tile(tile: Tile.Type):
 	tiles_in_hand.append(tile)
-	$HandListTiles.add_item(Tile.type_to_string(tile), get_texture_for_tile_type(tile))
+	$HandListTiles.add_item(Tile.type_to_string(tile), get_texture_for_tile_fn.call(tile))
 
 func remove_tile(tile_idx: int, tile_type: Tile.Type):
+	print("removed ",tile_idx," ",tiles_in_hand[tile_idx])
 	tiles_in_hand.remove_at(tile_idx)
 	$HandListTiles.remove_item(tile_idx)
 

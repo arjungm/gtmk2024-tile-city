@@ -28,6 +28,7 @@ var num_refills_used: int = 0
 # Grid/Map query functions
 var fn_house_count = null
 var fn_score_grid = null
+var fn_score_bonuses = null
 
 func get_money():
 	return money
@@ -38,21 +39,33 @@ func get_income():
 func get_food():
 	return fn_score_grid.call().food
 
+func get_food_bonus():
+	return fn_score_bonuses.call().food_bonus
+	
+func get_income_bonus():
+	return fn_score_bonuses.call().income_bonus
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	pass
+
+func new_game_setup():
 	$TileBag.refill_with(starting_tiles)
 	for i in range($PlayerHand.get_maximum_hand_size()):
 		draw_gain_tile()
 	$HUD.get_money_fn = get_money
 	$HUD.get_income_fn = get_income
 	$HUD.get_food_fn = get_food
+	
+	$HUD.get_income_bonus_fn = get_income_bonus
+	$HUD.get_food_bonus_fn = get_food_bonus
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	$ControlButtons/RefillButton.display_cost = get_current_refill_cost()
 	$ControlButtons/RefillButton.disabled = not (can_afford_refill() and can_refill_hand())
 	$ControlButtons/PlaceButton.disabled = ($PlayerHand.get_tile_count() == 0)
-	$ControlButtons/EndRoundButton.display_round = round_tracker
+	$ControlButtons/EndRoundButton.display_penalty = (get_num_used_cells_fn.call()+1)/2
 	
 func can_afford_refill():
 	return money >= get_current_refill_cost()
@@ -147,7 +160,7 @@ func _on_end_round_button_pressed() -> void:
 	put_discard_into_bag()
 	var num_draws = refill_hand_from_bag()
 	var notif_msg = "Gained $" + str(gained) + "\nDrew " + str(num_draws) + " tiles"
-	end_round_penalty += get_num_used_cells_fn.call()/2
+	end_round_penalty += (get_num_used_cells_fn.call()+1)/2
 	$Messages.notify_generic.emit(notif_msg)
 	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
 
@@ -160,3 +173,31 @@ func _on_grid_flag_claimed(grid_size: int, used_tiles: int) -> void:
 
 func _on_grid_grid_size_changed(grid_size: int) -> void:
 	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty)
+
+
+func _on_place_farm_pressed() -> void:
+	generic_place_tile(Tile.Type.FARM)
+
+func generic_place_tile(ttype: Tile.Type):
+	if $PlayerHand.contains_tile_type(ttype):
+		var ret = $PlayerHand.get_tile_from_hand(ttype)
+		var tile_idx = ret.tile_idx
+		var tile_text = ret.tile_text
+		var tile_type = ret.tile_type
+		if can_place_tile(ttype):
+			start_place_mode.emit(tile_idx, tile_text, tile_type)
+		else:
+			$Messages.notify_warning.emit($Messages.MessageTypes.INVALID_PLACEMENT_POP_FOOD)
+			$PlayerHand.reset_selection()
+
+
+func _on_place_house_pressed() -> void:
+	generic_place_tile(Tile.Type.HOUSE)
+
+
+func _on_place_road_pressed() -> void:
+	generic_place_tile(Tile.Type.ROAD)
+
+
+func _on_main_game_started() -> void:
+	new_game_setup()

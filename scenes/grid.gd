@@ -288,3 +288,9 @@ func score_grid() -> Score:
 				$GridControlsBox/HouseLineBox.get_bonus_income()
 	
 	return Score.new(income, food)
+	
+func score_info_bonuses() -> Dictionary:
+	var out = {}
+	out.food_bonus = $GridControlsBox/FarmSquareBox.get_bonus_food_production()
+	out.income_bonus = $GridControlsBox/HouseLineBox.get_bonus_income()
+	return out

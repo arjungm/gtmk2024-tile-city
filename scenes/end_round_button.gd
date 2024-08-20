@@ -1,6 +1,6 @@
 extends Button
 
-var display_round: int = 1
+var display_penalty: int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -9,4 +9,4 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	text = "end round " + str(display_round)
+	text = "(E) End Round (+" + str(display_penalty) + " penalty)"

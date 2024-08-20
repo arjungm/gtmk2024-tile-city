@@ -1,14 +1,64 @@
-[gd_scene load_steps=10 format=3 uid="uid://2elikixd2mpj"]
+[gd_scene load_steps=24 format=3 uid="uid://2elikixd2mpj"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_mqfbn"]
 [ext_resource type="Script" path="res://scenes/tile_bag.gd" id="2_gcavq"]
 [ext_resource type="Script" path="res://scenes/refill_button.gd" id="3_3b8ix"]
+[ext_resource type="Texture2D" uid="uid://773dij4qe4l" path="res://images/farm.png" id="3_afxfu"]
 [ext_resource type="Script" path="res://scenes/player_hand.gd" id="3_b3yqm"]
+[ext_resource type="Texture2D" uid="uid://drj2clhpn61tg" path="res://images/house.png" id="4_axiyn"]
 [ext_resource type="Script" path="res://scenes/discard_zone.gd" id="4_c5561"]
 [ext_resource type="Script" path="res://scenes/end_round_button.gd" id="4_cjryd"]
+[ext_resource type="Texture2D" uid="uid://l0f6cjcls0c" path="res://images/road.png" id="5_kwuiq"]
 [ext_resource type="Script" path="res://scenes/hud.gd" id="5_oyh3m"]
-[ext_resource type="Script" path="res://scenes/hudbg.gd" id="6_mypyl"]
 [ext_resource type="Script" path="res://scenes/messages.gd" id="6_oreyv"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_kfchj"]
+device = -1
+keycode = 81
+unicode = 113
+
+[sub_resource type="Shortcut" id="Shortcut_bp1qn"]
+events = [SubResource("InputEventKey_kfchj")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_8n2l6"]
+device = -1
+keycode = 87
+unicode = 119
+
+[sub_resource type="Shortcut" id="Shortcut_ccshv"]
+events = [SubResource("InputEventKey_8n2l6")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_ga2ug"]
+device = -1
+keycode = 82
+unicode = 114
+
+[sub_resource type="Shortcut" id="Shortcut_f2pey"]
+events = [SubResource("InputEventKey_ga2ug")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_d74ec"]
+device = -1
+keycode = 68
+unicode = 100
+
+[sub_resource type="Shortcut" id="Shortcut_jstbi"]
+events = [SubResource("InputEventKey_d74ec")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_hsx7b"]
+device = -1
+keycode = 70
+unicode = 102
+
+[sub_resource type="Shortcut" id="Shortcut_y6o31"]
+events = [SubResource("InputEventKey_hsx7b")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_wrgm2"]
+device = -1
+keycode = 69
+unicode = 101
+
+[sub_resource type="Shortcut" id="Shortcut_neita"]
+events = [SubResource("InputEventKey_wrgm2")]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_mqfbn")
@@ -38,116 +88,136 @@ offset_bottom = 426.0
 select_mode = 1
 
 [node name="ControlButtons" type="VBoxContainer" parent="."]
-offset_left = 98.0
-offset_top = 445.0
-offset_right = 255.0
-offset_bottom = 582.0
+offset_left = 21.0
+offset_top = 455.0
+offset_right = 335.0
+offset_bottom = 592.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlButtons"]
+layout_mode = 2
+
+[node name="PlaceFarm" type="Button" parent="ControlButtons/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+shortcut = SubResource("Shortcut_bp1qn")
+text = "(Q) Farm"
+icon = ExtResource("3_afxfu")
+
+[node name="PlaceHouse" type="Button" parent="ControlButtons/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+shortcut = SubResource("Shortcut_ccshv")
+text = "(W) House"
+icon = ExtResource("4_axiyn")
+
+[node name="PlaceRoad" type="Button" parent="ControlButtons/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 20
+shortcut = SubResource("Shortcut_f2pey")
+text = "(R) Road"
+icon = ExtResource("5_kwuiq")
 
 [node name="DiscardButton" type="Button" parent="ControlButtons"]
 layout_mode = 2
-text = "discard tiles"
+shortcut = SubResource("Shortcut_jstbi")
+text = "(D) Discard Selected Tiles"
 
 [node name="PlaceButton" type="Button" parent="ControlButtons"]
+visible = false
 layout_mode = 2
 text = "place tiles"
 
 [node name="RefillButton" type="Button" parent="ControlButtons"]
 layout_mode = 2
-text = "refill tiles"
+shortcut = SubResource("Shortcut_y6o31")
+text = "(F) Refill Hand"
 script = ExtResource("3_3b8ix")
 
 [node name="EndRoundButton" type="Button" parent="ControlButtons"]
 layout_mode = 2
-text = "end round"
+shortcut = SubResource("Shortcut_neita")
+text = "(E) End Round"
 script = ExtResource("4_cjryd")
 
 [node name="DiscardZone" type="Node2D" parent="."]
-position = Vector2(-186, 534)
+position = Vector2(37, 614)
 script = ExtResource("4_c5561")
 metadata/_edit_group_ = true
 
-[node name="DiscardBG" type="ColorRect" parent="DiscardZone"]
-offset_left = 298.0
-offset_top = 73.0
-offset_right = 419.0
-offset_bottom = 197.0
-color = Color(0.486275, 0.117647, 0.247059, 1)
+[node name="VboxContainer" type="VBoxContainer" parent="DiscardZone"]
+custom_minimum_size = Vector2(120, 0)
+offset_right = 120.0
+offset_bottom = 180.0
 
-[node name="TitleDiscard" type="Label" parent="DiscardZone"]
-offset_left = 307.0
-offset_top = 81.0
-offset_right = 366.0
-offset_bottom = 104.0
+[node name="TitleDiscard" type="Label" parent="DiscardZone/VboxContainer"]
+layout_mode = 2
 text = "Discard"
 
-[node name="DiscardContentsList" type="Label" parent="DiscardZone"]
-offset_left = 308.0
-offset_top = 112.0
-offset_right = 407.0
-offset_bottom = 187.0
-text = "-
--
--"
+[node name="CenterContainer" type="CenterContainer" parent="DiscardZone/VboxContainer"]
+custom_minimum_size = Vector2(120, 150)
+layout_mode = 2
+
+[node name="DiscardBG" type="ColorRect" parent="DiscardZone/VboxContainer/CenterContainer"]
+custom_minimum_size = Vector2(120, 150)
+layout_mode = 2
+color = Color(0.486275, 0.117647, 0.247059, 1)
+
+[node name="DiscardItemList" type="ItemList" parent="DiscardZone/VboxContainer/CenterContainer"]
+custom_minimum_size = Vector2(100, 140)
+layout_mode = 2
 
 [node name="TileBag" type="Node2D" parent="."]
-position = Vector2(-347, 656)
+position = Vector2(187, 615)
 script = ExtResource("2_gcavq")
 metadata/_edit_group_ = true
 
-[node name="BagBG" type="ColorRect" parent="TileBag"]
-offset_left = 458.0
-offset_top = 95.0
-offset_right = 579.0
-offset_bottom = 223.0
-color = Color(0, 0.247059, 0.529412, 1)
+[node name="VBoxContainer" type="VBoxContainer" parent="TileBag"]
+custom_minimum_size = Vector2(120, 0)
+offset_right = 120.0
+offset_bottom = 180.0
 
-[node name="BagTitle" type="Label" parent="TileBag"]
-offset_left = 467.0
-offset_top = 101.0
-offset_right = 507.0
-offset_bottom = 124.0
+[node name="BagTitle" type="Label" parent="TileBag/VBoxContainer"]
+layout_mode = 2
 text = "Bag"
 
-[node name="BagContentsList" type="Label" parent="TileBag"]
-offset_left = 471.0
-offset_top = 133.0
-offset_right = 562.0
-offset_bottom = 208.0
-text = "-
--
--"
+[node name="CenterContainer" type="CenterContainer" parent="TileBag/VBoxContainer"]
+custom_minimum_size = Vector2(120, 150)
+layout_mode = 2
+
+[node name="BagBG" type="ColorRect" parent="TileBag/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(120, 150)
+layout_mode = 2
+color = Color(0, 0.247059, 0.529412, 1)
+
+[node name="BagItemList" type="ItemList" parent="TileBag/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(100, 140)
+layout_mode = 2
 
 [node name="HUD" type="Node2D" parent="."]
-position = Vector2(112, 905)
+position = Vector2(75, 837)
 script = ExtResource("5_oyh3m")
 metadata/_edit_group_ = true
 
-[node name="CenterContainer" type="CenterContainer" parent="HUD"]
-offset_right = 154.0
-offset_bottom = 112.0
-metadata/_edit_group_ = true
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD"]
+custom_minimum_size = Vector2(200, 150)
+offset_right = 200.0
+offset_bottom = 177.0
 
-[node name="HUDBG" type="ColorRect" parent="HUD/CenterContainer"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-color = Color(0, 0.286275, 0.309804, 1)
-script = ExtResource("6_mypyl")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
-offset_left = 10.0
-offset_top = 5.0
-offset_right = 108.0
-offset_bottom = 107.0
-
-[node name="HUDTitle" type="Label" parent="HUD/VBoxContainer"]
+[node name="HUDTitle" type="Label" parent="HUD/VBoxContainer2"]
 layout_mode = 2
 text = "Stats"
 
-[node name="HUDContents" type="Label" parent="HUD/VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="HUD/VBoxContainer2"]
 layout_mode = 2
-text = "Money: -
-Population: -
-Food: -"
+
+[node name="HUDBG" type="ColorRect" parent="HUD/VBoxContainer2/CenterContainer"]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 2
+color = Color(0, 0.286275, 0.309804, 1)
+
+[node name="HudInfoList" type="ItemList" parent="HUD/VBoxContainer2/CenterContainer"]
+custom_minimum_size = Vector2(180, 140)
+layout_mode = 2
 
 [node name="Messages" type="Node2D" parent="."]
 position = Vector2(25, 17)
@@ -172,6 +242,9 @@ custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 autowrap_mode = 2
 
+[connection signal="pressed" from="ControlButtons/HBoxContainer/PlaceFarm" to="." method="_on_place_farm_pressed"]
+[connection signal="pressed" from="ControlButtons/HBoxContainer/PlaceHouse" to="." method="_on_place_house_pressed"]
+[connection signal="pressed" from="ControlButtons/HBoxContainer/PlaceRoad" to="." method="_on_place_road_pressed"]
 [connection signal="pressed" from="ControlButtons/DiscardButton" to="." method="_on_discard_button_pressed"]
 [connection signal="pressed" from="ControlButtons/PlaceButton" to="." method="_on_place_button_pressed"]
 [connection signal="pressed" from="ControlButtons/RefillButton" to="." method="_on_refill_button_pressed"]

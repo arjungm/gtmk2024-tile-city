@@ -9,4 +9,4 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	text = "refill tiles: $" + str(display_cost)
+	text = "(F) Refill Hand: $" + str(display_cost)

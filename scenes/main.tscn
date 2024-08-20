@@ -230,6 +230,7 @@ size_flags_vertical = 3
 text = "Current Penalty: 0"
 script = ExtResource("6_vjwss")
 
+[connection signal="game_started" from="." to="Player" method="_on_main_game_started"]
 [connection signal="flag_score_changed" from="Player" to="CenterContainer/FlagScoreContainer/PreviousFlagScores" method="_on_player_flag_score_changed"]
 [connection signal="flag_scoring_changed" from="Player" to="CenterContainer/FlagScoreContainer/CurrentFlagScore" method="_on_player_flag_scoring_changed"]
 [connection signal="flag_scoring_changed" from="Player" to="CenterContainer/FlagScoreContainer/EndRoundPenalty" method="_on_player_flag_scoring_changed"]
