@@ -71,13 +71,16 @@ func refill_hand_from_bag():
 	
 	if num_bag_tiles < num_desired_tiles:
 		# refill and redraw
-		$TileBag.refill_with($DiscardZone.discarded_tiles)
-		$DiscardZone.discarded_tiles.clear()
+		put_discard_into_bag()
 		num_to_draw = num_desired_tiles - num_to_draw
 		for i in range(num_to_draw):
 			draw_gain_tile()
 	
 	return num_desired_tiles
+
+func put_discard_into_bag():
+	$TileBag.refill_with($DiscardZone.discarded_tiles)
+	$DiscardZone.discarded_tiles.clear()
 
 func draw_gain_tile():
 	var drawn_tile = $TileBag.get_random_tile()
@@ -132,6 +135,7 @@ func _on_end_round_button_pressed() -> void:
 	money += gained
 	round_tracker += 1
 	num_refills_used = 0
+	put_discard_into_bag()
 	var num_draws = refill_hand_from_bag()
 	var notif_msg = "Gained $" + str(gained) + "\nDrew " + str(num_draws) + " tiles"
 	$Messages.notify_generic.emit(notif_msg)
