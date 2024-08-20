@@ -36,7 +36,7 @@ var fn_score_grid = null
 var fn_score_bonuses = null
 
 func get_final_score_text() -> String:
-	return str("Total Expansions: ", flag_count+1, "\nEnd Score: ", flag_score)
+	return str("Total Expansions: ", flag_count, "\nEnd Score: ", flag_score)
 
 func get_money():
 	return money
@@ -69,6 +69,7 @@ func new_game_setup():
 	
 	$HUD.get_income_bonus_fn = get_income_bonus
 	$HUD.get_food_bonus_fn = get_food_bonus
+	flag_count = 0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -179,6 +180,7 @@ func _on_grid_flag_claimed(grid_size: int, used_tiles: int) -> void:
 	flag_score_changed.emit(flag_score, end_round_penalty, grid_size)
 	end_round_penalty = 0
 	flag_scoring_changed.emit(get_potential_flag_score_fn.call(), end_round_penalty, grid_size)
+	flag_count += 1
 	if grid_size >= GAME_END_SIZE:
 		game_end.emit()
 
