@@ -7,6 +7,9 @@ var registered_house_lines: Array = []
 var house_line_layer_render_fn = null
 var house_line_layer_clear_fn = null
 
+# Bonus for different length lines. 0 score for length of 0, 1 or 2. 
+const HOUSE_LINE_SIZE_SCORE_ARRAY: Array[int] = [0, 0, 0, 1, 2, 4, 8]
+
 func get_current_picking_mode():
 	return current_picking_mode
 
@@ -46,9 +49,14 @@ func register_new_house_line(new_line: Array[Vector2i]) -> bool:
 	registered_house_lines.append(new_line)
 	return true
 
-
 func _on_house_line_reset_pressed() -> void:
 	for line in registered_house_lines:
 		for cell in line:
 			house_line_layer_clear_fn.call(cell)
 	registered_house_lines.clear() # Replace with function body.
+
+func get_bonus_income() -> int:
+	var bonus_income: int = 0
+	for lines in registered_house_lines:
+		bonus_income += HOUSE_LINE_SIZE_SCORE_ARRAY[lines.size()]
+	return bonus_income

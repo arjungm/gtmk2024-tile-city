@@ -299,12 +299,10 @@ func _on_reset_button_pressed() -> void:
 func score_grid() -> Score:
 	# Score food
 	var food = $Grids/Map.get_num_placed_tiles(Tile.Type.FARM) + \
-				$GridControlsBox/FarmSquareBox.get_bonus_food_production()
+			$GridControlsBox/FarmSquareBox.get_bonus_food_production()
 	
 	# Score population
-	var pop = $Grids/Map.get_num_placed_tiles(Tile.Type.HOUSE)
+	var income = $Grids/Map.get_num_placed_tiles(Tile.Type.HOUSE) + \
+				$GridControlsBox/HouseLineBox.get_bonus_income()
 	
-	# Earn money (?)
-	var money = 0
-	
-	return Score.new(pop, money, food)
+	return Score.new(income, food)
