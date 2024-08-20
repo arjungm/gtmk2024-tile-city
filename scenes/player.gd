@@ -58,6 +58,7 @@ func _ready() -> void:
 	pass
 
 func new_game_setup():
+	$PlayerHand.clear()
 	$TileBag.clear_bag()
 	$TileBag.refill_with(starting_tiles)
 	$DiscardZone.clear()
