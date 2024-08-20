@@ -47,6 +47,10 @@ script = ExtResource("3_m6dip")
 layout_mode = 2
 text = "Toggle House Zones"
 
+[node name="HouseLineReset" type="Button" parent="GridControlsBox/HouseLineBox"]
+layout_mode = 2
+text = "Reset House Zones"
+
 [node name="HouseLineMode" type="Label" parent="GridControlsBox/HouseLineBox"]
 layout_mode = 2
 text = "Inactive"
@@ -99,5 +103,6 @@ collision_enabled = false
 [connection signal="pressed" from="GridControlsBox/Expand Button" to="Grids/BG" method="_on_expand_button_pressed"]
 [connection signal="pressed" from="GridControlsBox/Reset Button" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="GridControlsBox/HouseLineBox/HouseLineButton" to="GridControlsBox/HouseLineBox" method="_on_house_line_button_pressed"]
+[connection signal="pressed" from="GridControlsBox/HouseLineBox/HouseLineReset" to="GridControlsBox/HouseLineBox" method="_on_house_line_reset_pressed"]
 [connection signal="toggled" from="GridControlsBox/FarmSquareBox/FarmSquareButton" to="GridControlsBox/FarmSquareBox" method="_on_farm_square_button_toggled"]
 [connection signal="pressed" from="GridControlsBox/FarmSquareBox/FarmSquareReset" to="GridControlsBox/FarmSquareBox" method="_on_farm_square_reset_pressed"]

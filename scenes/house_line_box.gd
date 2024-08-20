@@ -5,6 +5,7 @@ var current_picking_mode = HousePickingMode.Type.INACTIVE
 var registered_house_lines: Array = []
 
 var house_line_layer_render_fn = null
+var house_line_layer_clear_fn = null
 
 func get_current_picking_mode():
 	return current_picking_mode
@@ -44,3 +45,10 @@ func register_new_house_line(new_line: Array[Vector2i]) -> bool:
 	
 	registered_house_lines.append(new_line)
 	return true
+
+
+func _on_house_line_reset_pressed() -> void:
+	for line in registered_house_lines:
+		for cell in line:
+			house_line_layer_clear_fn.call(cell)
+	registered_house_lines.clear() # Replace with function body.
