@@ -8,6 +8,9 @@ func _ready() -> void:
 	$Player.get_game_map_fn = get_game_map_fn
 	$Player.fn_score_grid = $Grid.score_grid
 	$Player.fn_house_count = get_house_count
+	
+	# resource loading nonsense
+	
 
 func get_house_count() -> int:
 	return $Grid/Grids/Map.get_num_placed_tiles(Tile.Type.HOUSE)
