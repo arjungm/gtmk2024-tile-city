@@ -63,15 +63,18 @@ layout_mode = 2
 script = ExtResource("4_rc6g4")
 
 [node name="FarmSquareButton" type="Button" parent="GridControlsBox/FarmSquareBox"]
+visible = false
 layout_mode = 2
 toggle_mode = true
 text = "Toggle Farm Zones"
 
 [node name="FarmSquareReset" type="Button" parent="GridControlsBox/FarmSquareBox"]
+visible = false
 layout_mode = 2
 text = "Reset Farm Zones"
 
 [node name="FarmSquareMode" type="Label" parent="GridControlsBox/FarmSquareBox"]
+visible = false
 layout_mode = 2
 text = "Inactive"
 
